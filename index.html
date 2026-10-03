@@ -1,127 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="A simple home for your pet's health records and care history."
-    />
-    <title>MyBarkChart</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <nav class="top-nav" aria-label="Main navigation">
-          <a class="brand" href="index.html">MyBarkChart</a>
-          <div class="nav-links">
-            <a href="index.html" aria-current="page">Home</a>
-            <a href="records.html">Records</a>
-            <a href="#demo">Demo</a>
-          </div>
-          <a class="primary-btn" href="#login">Log in</a>
-        </nav>
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="MyBarkChart helps pet parents keep health information, medications, appointments, and notes organized in one place."
+  />
+  <title>MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-    <main>
-      <section class="hero">
-        <div class="container hero-copy">
-          <p class="eyebrow">Pet health, organized</p>
-          <h1>All of your pet's care, together in one place.</h1>
-          <p class="lead">
-            Keep health history, lab results, medications, and visit notes easy
-            to find when you and your veterinarian need them.
+<body>
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Primary navigation">
+      <a class="brand" href="#home" aria-label="MyBarkChart home">
+        <img
+          class="brand-logo"
+          src="assets/images/sparky-logo.png"
+          alt="Cartoon portrait of Sparky"
+        />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <a class="nav-button" href="#features">Explore</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <p class="eyebrow">Pet health, without the paper chase</p>
+
+          <h1>
+            Everything about your best friend,
+            <span>all in one place.</span>
+          </h1>
+
+          <p class="hero-text">
+            MyBarkChart gives pet parents a simple home for health records,
+            medications, appointments, symptoms, and the little details that
+            matter most.
           </p>
-          <div class="cta-row">
-            <a class="primary-btn" href="#login">Log in to MyBarkChart</a>
-            <a class="secondary-btn" href="records.html">See the records page</a>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#features">See what it tracks</a>
+            <a class="button button-secondary" href="#about">Meet MyBarkChart</a>
+          </div>
+
+          <div class="trust-note">
+            <span class="paw-dot" aria-hidden="true">●</span>
+            Built with real pet-parent life in mind.
           </div>
         </div>
-      </section>
 
-      <section class="demo-section" id="demo">
-        <div class="container">
-          <div class="section-heading">
-            <p class="eyebrow">A quick product tour</p>
-            <h2>See how MyBarkChart keeps care on track.</h2>
-            <p class="lead">
-              A preview presented as a few simple slides. Sample information
-              shown here is for demonstration only.
-            </p>
-          </div>
+        <div class="hero-card-wrap" aria-label="MyBarkChart preview">
+          <div class="hero-card">
+            <div class="card-heading">
+              <div>
+                <p class="card-label">Today</p>
+                <h2>Sparky's dashboard</h2>
+              </div>
+              <span class="status-pill">Doing okay</span>
+            </div>
 
-          <div class="slide-deck" aria-label="MyBarkChart slide presentation demo">
-            <article class="demo-slide slide-overview">
-              <div class="slide-topline">
-                <span>MYBARKCHART</span>
-                <span>01 / 03</span>
-              </div>
-              <div class="slide-content">
-                <p class="eyebrow">One clear overview</p>
-                <h3>Your pet's health story, at a glance.</h3>
-                <p>Bring important details together for every stage of care.</p>
-              </div>
-              <div class="slide-footer">A calmer way to manage pet health</div>
-            </article>
-
-            <article class="demo-slide slide-history">
-              <div class="slide-topline">
-                <span>CARE HISTORY</span>
-                <span>02 / 03</span>
-              </div>
-              <div class="slide-content">
-                <p class="eyebrow">The full picture</p>
-                <h3>Visits, vaccines, and notes in one timeline.</h3>
-                <ul class="slide-list">
-                  <li><span>Wellness visit</span><strong>Sep 28</strong></li>
-                  <li><span>Vaccination</span><strong>Aug 14</strong></li>
-                  <li><span>Follow-up note</span><strong>Jul 02</strong></li>
-                </ul>
-              </div>
-              <div class="slide-footer">Find the details when you need them</div>
-            </article>
-
-            <article class="demo-slide slide-trends">
-              <div class="slide-topline">
-                <span>HEALTH TRENDS</span>
-                <span>03 / 03</span>
-              </div>
-              <div class="slide-content">
-                <p class="eyebrow">Changes over time</p>
-                <h3>Make lab results easier to follow.</h3>
-                <div class="slide-chart" aria-label="Illustrative upward trend">
-                  <span></span><span></span><span></span><span></span><span></span>
+            <div class="mini-grid">
+              <article class="mini-card">
+                <span class="mini-icon">💊</span>
+                <div>
+                  <p class="mini-title">Medications</p>
+                  <p class="mini-copy">2 due today</p>
                 </div>
-                <p class="slide-note">A visual history to discuss with your vet.</p>
+              </article>
+
+              <article class="mini-card">
+                <span class="mini-icon">🩺</span>
+                <div>
+                  <p class="mini-title">Appointments</p>
+                  <p class="mini-copy">Next visit saved</p>
+                </div>
+              </article>
+
+              <article class="mini-card">
+                <span class="mini-icon">📝</span>
+                <div>
+                  <p class="mini-title">Health notes</p>
+                  <p class="mini-copy">Symptoms + updates</p>
+                </div>
+              </article>
+
+              <article class="mini-card">
+                <span class="mini-icon">📂</span>
+                <div>
+                  <p class="mini-title">Records</p>
+                  <p class="mini-copy">Labs, files + history</p>
+                </div>
+              </article>
+            </div>
+
+            <div class="timeline">
+              <div class="timeline-line" aria-hidden="true"></div>
+
+              <div class="timeline-item">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div>
+                  <p class="timeline-title">Morning medication logged</p>
+                  <p class="timeline-meta">8:15 AM · Completed</p>
+                </div>
               </div>
-              <div class="slide-footer">Your records, ready for the next visit</div>
-            </article>
+
+              <div class="timeline-item">
+                <span class="timeline-dot timeline-dot-soft" aria-hidden="true"></span>
+                <div>
+                  <p class="timeline-title">Add today's notes</p>
+                  <p class="timeline-meta">Energy, appetite, symptoms</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="floating-badge">
+            <span>🐾</span>
+            <div>
+              <strong>One less thing</strong>
+              <small>to keep in your head.</small>
+            </div>
           </div>
         </div>
-      </section>
-
-      <section class="login-note" id="login">
-        <div class="container login-panel">
-          <div>
-            <p class="eyebrow">Welcome back</p>
-            <h2>Ready to check in?</h2>
-            <p>Log in to continue to your pet's health records.</p>
-          </div>
-          <a class="primary-btn" href="#">Log in</a>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container footer-row">
-        <p>© 2026 MyBarkChart</p>
-        <nav aria-label="Footer navigation">
-          <a href="records.html">Records</a>
-          <a href="#demo">Demo</a>
-        </nav>
       </div>
-    </footer>
-  </body>
+    </section>
+
+    <section class="features section" id="features">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Made for real life</p>
+          <h2>Keep the important stuff easy to find.</h2>
+          <p>
+            No digging through old emails, paper folders, or half-remembered
+            notes when the vet asks a question.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <span class="feature-icon">💊</span>
+            <h3>Medication tracking</h3>
+            <p>Keep doses, schedules, changes, and current medications together.</p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-icon">🩺</span>
+            <h3>Vet visits</h3>
+            <p>Save appointments, questions to ask, follow-up instructions, and visit notes.</p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>Health history</h3>
+            <p>See symptoms, labs, weight changes, and ongoing conditions in context.</p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-icon">📁</span>
+            <h3>Important records</h3>
+            <p>Keep medical files and key information accessible when you need them.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="about section" id="about">
+      <div class="container about-card">
+        <div>
+          <p class="eyebrow">Why MyBarkChart?</p>
+          <h2>Because caring for them already takes enough brainpower.</h2>
+        </div>
+
+        <p>
+          MyBarkChart is designed to make pet health information feel manageable:
+          clear, organized, friendly, and easy to return to when life gets busy.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="container footer-layout">
+      <div class="footer-brand">
+        <img src="assets/images/sparky-logo.png" alt="" />
+        <span>MyBarkChart</span>
+      </div>
+
+      <p>Made with care for pets and the people keeping track of everything.</p>
+    </div>
+  </footer>
+</body>
 </html>
