@@ -1,2 +1,21 @@
 # MyBarkChart
 This is a site designed to hold your animal's medical records, such as lab values and visit notes.
+
+# Why MyBarkChart exists
+My dog, Sparky, is getting older. Due to her increasingly complicated medical history, I found a need for a site that could consolidate all her info into an easy to use, user-friendly design.
+
+![First Day of School with dog](sparky2.jpg)
+
+# Purpose
+The site is intended to streamline medical records for your animals. Any pet can be added, and as many as you need. When one pet passes, the information can be archived. Once you have a login, you can access:
+- lab records
+- medication records
+- clinic/veterinarian information
+- trends in lab work
+- notes about labs or visits
+
+The site will send refill reminders via email, including the medication and which clinic to contact for the refill.
+
+For now, all medical information is entered manually. I chose not to use an AI agent to parse medical records because manual entry gives the user greater control over the accuracy of their pet's information. AI-assisted record parsing may be added later as the site's needs grow.
+
+Entering medications and lab values manually the first time will be important to ensure the system works correctly. As more lab results are added over time, MyBarkChart will make it easier to visualize and identify trends in an animal's health.
