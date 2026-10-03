@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Browse sample pet visits, vaccinations, and lab records."
+    />
+    <title>Records | MyBarkChart</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <nav class="top-nav" aria-label="Main navigation">
+          <a class="brand" href="index.html">MyBarkChart</a>
+          <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="records.html" aria-current="page">Records</a>
+            <a href="index.html#demo">Demo</a>
+          </div>
+          <a class="primary-btn" href="index.html#login">Log in</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="records-page">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Pet health history</p>
+            <h1>Records</h1>
+            <p class="lead">
+              Keep visit notes, vaccinations, and lab results together. These
+              sample entries demonstrate how records can be organized.
+            </p>
+          </div>
+
+          <section class="record-group" aria-labelledby="visits-heading">
+            <h2 id="visits-heading">Visits and care</h2>
+            <div class="record-list">
+              <article class="record-item">
+                <div>
+                  <span class="record-type">Vaccination</span>
+                  <h3>Annual rabies check</h3>
+                  <p>Routine booster administered; no concerns noted.</p>
+                </div>
+                <time datetime="2026-09-28">Sep 28, 2026</time>
+              </article>
+              <article class="record-item">
+                <div>
+                  <span class="record-type">Visit note</span>
+                  <h3>Routine wellness exam</h3>
+                  <p>General exam and care plan reviewed.</p>
+                </div>
+                <time datetime="2026-08-30">Aug 30, 2026</time>
+              </article>
+              <article class="record-item">
+                <div>
+                  <span class="record-type">Medication</span>
+                  <h3>Monthly flea and tick prevention</h3>
+                  <p>Prescription and administration schedule recorded.</p>
+                </div>
+                <time datetime="2026-08-01">Aug 01, 2026</time>
+              </article>
+            </div>
+          </section>
+
+          <section class="record-group" aria-labelledby="labs-heading">
+            <h2 id="labs-heading">Lab results</h2>
+            <div class="record-list">
+              <article class="record-item">
+                <div>
+                  <span class="record-type">Bloodwork</span>
+                  <h3>CBC review</h3>
+                  <p>Complete blood count results saved for comparison.</p>
+                </div>
+                <time datetime="2026-09-15">Sep 15, 2026</time>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-row">
+        <p>© 2026 MyBarkChart</p>
+        <nav aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="index.html#demo">Demo</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
