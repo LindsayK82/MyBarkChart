@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View and manage your pet's MyBarkChart health dashboard." />
+  <title>Patient Dashboard | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="demo-page dashboard-page">
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Patient navigation">
+      <a class="brand" href="index.html" aria-label="MyBarkChart home">
+        <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+      <div class="nav-links demo-nav-links">
+        <a href="#overview">Overview</a><a href="#medications">Medications</a><a href="records.html">Records</a><a href="labs.html">Labs</a><a href="#notes">Notes</a>
+      </div>
+      <a class="nav-button" href="index.html">Log out</a>
+    </nav>
+  </header>
+
+  <main class="demo-main">
+    <section class="pet-hero" id="overview">
+      <div class="container pet-hero-layout">
+        <div class="pet-profile">
+          <div class="pet-photo dashboard-photo-placeholder" id="dashboard-photo" aria-label="Pet photo"><span>🐾</span></div>
+          <div>
+            <p class="eyebrow">Patient chart</p>
+            <h1 id="pet-name">Your pet</h1>
+            <p class="pet-meta" id="pet-meta">Profile details will appear here.</p>
+            <div class="pet-tags" id="pet-tags"></div>
+          </div>
+        </div>
+        <div class="demo-note dashboard-welcome">
+          <span aria-hidden="true">💚</span>
+          <p><strong id="welcome-title">Welcome to your chart.</strong> Add health records as you go, and MyBarkChart will keep the important details together.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="container dashboard-layout">
+      <div class="dashboard-main">
+        <section class="dashboard-section" aria-labelledby="glance-title">
+          <div class="dashboard-heading"><div><p class="eyebrow">Today</p><h2 id="glance-title">Health at a glance</h2></div><span class="status-pill">Getting started</span></div>
+          <div class="stat-grid">
+            <article class="stat-card"><span class="stat-icon">💊</span><p>Current medications</p><strong>0</strong><small>No medications added yet</small></article>
+            <article class="stat-card"><span class="stat-icon">🩺</span><p>Next follow-up</p><strong>—</strong><small>No appointment saved</small></article>
+            <article class="stat-card"><span class="stat-icon">⚖️</span><p>Latest weight</p><strong id="weight-stat">—</strong><small id="weight-unit">Add a weight to begin</small></article>
+            <a class="stat-card stat-card-link" href="labs.html"><span class="stat-icon">📈</span><p>Lab trends</p><strong>0</strong><small>No lab values tracked yet →</small></a>
+          </div>
+        </section>
+
+        <section class="dashboard-section" id="medications" aria-labelledby="med-title">
+          <div class="dashboard-heading"><div><p class="eyebrow">Medication cabinet</p><h2 id="med-title">Current medications</h2></div><button class="text-button" type="button">+ Add medication</button></div>
+          <div class="dashboard-empty"><span aria-hidden="true">💊</span><div><h3>No medications added yet</h3><p>When you add a medication, its name and schedule will appear here.</p></div></div>
+        </section>
+
+        <section class="dashboard-section" id="records" aria-labelledby="records-title">
+          <div class="dashboard-heading"><div><p class="eyebrow">Health history</p><h2 id="records-title">Recent records</h2></div><a class="text-link" href="records.html">+ Add a record</a></div>
+          <div class="dashboard-empty"><span aria-hidden="true">📋</span><div><h3>No health records yet</h3><p>Visits, lab results, imaging, diagnoses, and other records will collect here as you add them.</p><a class="text-link" href="records.html">Add the first record →</a></div></div>
+        </section>
+
+        <section class="dashboard-section" id="notes" aria-labelledby="notes-title">
+          <div class="dashboard-heading"><div><p class="eyebrow">Pet-parent notes</p><h2 id="notes-title">Things I want to remember</h2></div><button class="text-button" type="button">+ Add note</button></div>
+          <div class="dashboard-empty"><span aria-hidden="true">📝</span><div><h3>Nothing to remember yet</h3><p>Keep questions, symptoms, reminders, or anything else you want handy for the next visit.</p></div></div>
+        </section>
+      </div>
+
+      <aside class="dashboard-side" aria-label="Patient chart summary">
+        <section class="side-card next-up"><p class="eyebrow">Next up</p><h2>No appointment saved</h2><div class="calendar-date empty-calendar"><span>ADD</span><strong>+</strong></div><p>When you add a follow-up or appointment, it will be easy to spot here.</p><button class="text-button" type="button">+ Add appointment</button></section>
+        <section class="side-card"><p class="eyebrow">Quick info</p><dl class="quick-info"><div><dt>Primary clinic</dt><dd id="primary-clinic">Not added yet</dd></div><div><dt>Veterinarian</dt><dd id="primary-vet">Not added yet</dd></div><div><dt>Clinic phone</dt><dd id="clinic-phone">Not added yet</dd></div><div><dt>Birthday / age</dt><dd id="quick-age">Not added yet</dd></div></dl><div id="additional-clinics"></div></section>
+        <section class="side-card emergency-card"><span aria-hidden="true">🐾</span><div><h2>Build the story over time</h2><p>Your chart starts simple. Add records, labs, medications, and notes whenever you have them.</p></div></section>
+      </aside>
+    </div>
+
+    <section class="demo-cta dashboard-cta">
+      <div class="container demo-cta-card"><div><p class="eyebrow">Your household</p><h2>Have another pet?</h2><p>MyBarkChart is designed to keep multiple pet profiles under one account.</p></div><button class="button button-primary" type="button">+ Add Another Pet</button></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-layout"><div class="footer-brand"><img src="assets/images/Sparky-logo.png" alt="" /><span>MyBarkChart</span></div><p>Your pet's health story, organized.</p></div></footer>
+
+  <script>
+    const stored = localStorage.getItem('myBarkChartProfile');
+    let profile = null;
+    try { profile = stored ? JSON.parse(stored) : null; } catch (error) { console.warn('Could not read prototype profile.', error); }
+
+    function calculateAge(birthday) {
+      if (!birthday) return '';
+      const birth = new Date(`${birthday}T00:00:00`);
+      const today = new Date();
+      if (Number.isNaN(birth.getTime()) || birth > today) return '';
+      let years = today.getFullYear() - birth.getFullYear();
+      let months = today.getMonth() - birth.getMonth();
+      if (today.getDate() < birth.getDate()) months--;
+      if (months < 0) { years--; months += 12; }
+      if (years > 0) return `${years} ${years === 1 ? 'year' : 'years'} old`;
+      return `${Math.max(months, 0)} ${months === 1 ? 'month' : 'months'} old`;
+    }
+
+    if (profile?.pet) {
+      const pet = profile.pet;
+      const age = pet.age || calculateAge(pet.birthday);
+      document.getElementById('pet-name').textContent = pet.name || 'Your pet';
+      const meta = [pet.breed, age].filter(Boolean);
+      document.getElementById('pet-meta').textContent = meta.length ? meta.join(' · ') : 'Profile started — add more details anytime.';
+      document.title = `${pet.name || 'Patient'}'s Dashboard | MyBarkChart`;
+      document.getElementById('welcome-title').textContent = pet.name ? `${pet.name}'s chart is ready.` : 'Your chart is ready.';
+
+      if (pet.photo) {
+        const photo = document.getElementById('dashboard-photo');
+        photo.innerHTML = `<img src="${pet.photo}" alt="${pet.name ? `${pet.name}'s` : 'Pet'} profile photo" />`;
+        photo.classList.remove('dashboard-photo-placeholder');
+      }
+
+      const tags = document.getElementById('pet-tags');
+      if (pet.weight) tags.insertAdjacentHTML('beforeend', `<span>${pet.weight} lb</span>`);
+      if (pet.birthday) tags.insertAdjacentHTML('beforeend', `<span>Birthday ${new Date(`${pet.birthday}T00:00:00`).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</span>`);
+      if (!tags.children.length) tags.innerHTML = '<span>New profile</span>';
+
+      if (pet.weight) {
+        document.getElementById('weight-stat').textContent = pet.weight;
+        document.getElementById('weight-unit').textContent = 'pounds · from profile setup';
+      }
+      document.getElementById('quick-age').textContent = age || (pet.birthday ? pet.birthday : 'Not added yet');
+    }
+
+    if (profile?.clinics?.length) {
+      const primary = profile.clinics[0];
+      document.getElementById('primary-clinic').textContent = primary.name || 'Not added yet';
+      document.getElementById('primary-vet').textContent = primary.veterinarian || 'Not added yet';
+      document.getElementById('clinic-phone').textContent = primary.phone || 'Not added yet';
+      if (profile.clinics.length > 1) {
+        const extra = document.getElementById('additional-clinics');
+        extra.className = 'additional-clinics';
+        extra.innerHTML = `<p>${profile.clinics.length - 1} additional ${profile.clinics.length === 2 ? 'clinic' : 'clinics'} saved</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

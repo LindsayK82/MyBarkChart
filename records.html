@@ -1,94 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Browse sample pet visits, vaccinations, and lab records."
-    />
-    <title>Records | MyBarkChart</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <nav class="top-nav" aria-label="Main navigation">
-          <a class="brand" href="index.html">MyBarkChart</a>
-          <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="records.html" aria-current="page">Records</a>
-            <a href="labs.html">Labs</a>
-            <a href="demo.html">Demo</a>
-          </div>
-          <a class="primary-btn" href="index.html#login">Log in</a>
-        </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Add a health record to your pet's MyBarkChart." />
+  <title>Add a Record | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="record-entry-page">
+<header class="site-header">
+  <div class="container">
+    <nav class="top-nav" aria-label="Main navigation">
+     <a class="brand" href="#home" aria-label="MyBarkChart home">
+        <img
+          class="brand-logo"
+          src="assets/images/Sparky-logo.png"
+          alt="Cartoon portrait of Sparky"
+        />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+     
+      <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="records.html" aria-current="page">Add Record</a>
+        <a href="labs.html">Labs</a>
       </div>
-    </header>
+      <a class="primary-btn" href="dashboard.html">Back to chart</a>
+    </nav>
+    </div>
+  </header>
+<main class="record-entry-main"><div class="container record-entry-shell">
+  <div class="record-entry-heading"><p class="eyebrow">Build the health history</p><h1>Add a record</h1><p class="lead">Choose what you’d like to add. We’ll only show the fields you need.</p><p class="record-pet-note" id="record-pet-note">Adding to your pet’s chart</p></div>
 
-    <main>
-      <section class="records-page">
-        <div class="container">
-          <div class="section-heading">
-            <p class="eyebrow">Pet health history</p>
-            <h1>Records</h1>
-            <p class="lead">
-              Keep visit notes, vaccinations, imaging, and uploaded reports together. These
-              sample entries demonstrate how records can be organized.
-            </p>
-          </div>
+  <section class="record-picker" aria-labelledby="record-picker-title">
+    <h2 id="record-picker-title">What would you like to add?</h2>
+    <div class="record-type-grid">
+      <button class="record-type-card" type="button" data-record-type="lab"><span>🧪</span><strong>Lab Results</strong><small>Bloodwork, urinalysis, and other measured values</small></button>
+      <button class="record-type-card" type="button" data-record-type="visit"><span>🩺</span><strong>Visit / Exam</strong><small>Wellness visits, sick visits, and exam notes</small></button>
+      <button class="record-type-card" type="button" data-record-type="vaccination"><span>💉</span><strong>Vaccination</strong><small>Vaccines, boosters, and due dates</small></button>
+      <button class="record-type-card" type="button" data-record-type="procedure"><span>🏥</span><strong>Procedure / Surgery</strong><small>Operations, dental work, and treatments</small></button>
+      <button class="record-type-card" type="button" data-record-type="imaging"><span>🩻</span><strong>Imaging</strong><small>X-rays, ultrasound, CT, and MRI</small></button>
+      <button class="record-type-card" type="button" data-record-type="diagnosis"><span>📋</span><strong>Diagnosis</strong><small>Conditions and diagnoses to keep on the chart</small></button>
+      <button class="record-type-card" type="button" data-record-type="other"><span>🐾</span><strong>Other</strong><small>Anything that doesn’t fit another category</small></button>
+    </div>
+  </section>
 
-          <section class="record-group" aria-labelledby="visits-heading">
-            <h2 id="visits-heading">Visits and care</h2>
-            <div class="record-list">
-              <article class="record-item">
-                <div>
-                  <span class="record-type">Vaccination</span>
-                  <h3>Annual rabies check</h3>
-                  <p>Routine booster administered; no concerns noted.</p>
-                </div>
-                <time datetime="2026-09-28">Sep 28, 2026</time>
-              </article>
-              <article class="record-item">
-                <div>
-                  <span class="record-type">Visit note</span>
-                  <h3>Routine wellness exam</h3>
-                  <p>General exam and care plan reviewed.</p>
-                </div>
-                <time datetime="2026-08-30">Aug 30, 2026</time>
-              </article>
-              <article class="record-item">
-                <div>
-                  <span class="record-type">Medication</span>
-                  <h3>Monthly flea and tick prevention</h3>
-                  <p>Prescription and administration schedule recorded.</p>
-                </div>
-                <time datetime="2026-08-01">Aug 01, 2026</time>
-              </article>
-            </div>
-          </section>
-
-          <section class="record-group lab-promo" aria-labelledby="labs-heading">
-            <h2 id="labs-heading">Looking for lab results?</h2>
-            <p>Lab values now have their own home, where results can be compared across dates and viewed as trends.</p>
-            <a class="button button-primary" href="labs.html">Explore sample labs →</a>
-          </section>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container footer-row">
-        <p>© 2026 MyBarkChart</p>
-        <nav aria-label="Footer navigation">
-          <a href="index.html">Home</a>
-          <a href="labs.html">Labs</a>
-          <a href="demo.html">Demo</a>
-        </nav>
+  <section class="record-form-card" id="record-form-card" hidden aria-live="polite">
+    <div class="record-form-heading"><div><p class="eyebrow" id="form-eyebrow">New record</p><h2 id="form-title">Record details</h2></div><button class="change-record-type" type="button" id="change-record-type">Change type</button></div>
+    <form id="record-form">
+      <div class="form-grid-two common-record-fields">
+        <label class="form-field"><span>Date <b>*</b></span><input class="form-input" type="date" id="record-date" required /></label>
+        <label class="form-field"><span>Clinic or veterinarian</span><select class="form-input" id="record-provider"><option value="">Select if known</option></select></label>
       </div>
-    </footer>
-  </body>
-</html>
+      <div id="dynamic-record-fields"></div>
+      <label class="form-field record-notes"><span>Notes <em>optional</em></span><textarea class="form-input" id="record-notes" rows="4" placeholder="Anything else you want to remember about this record"></textarea></label>
+      <div class="record-form-actions"><button class="button button-secondary" type="button" id="cancel-record">Cancel</button><button class="button button-primary" type="submit">Save record</button></div>
+      <p class="prototype-note">Prototype note: saved records are stored only in this browser for now. We’ll connect this to the MyBarkChart database later.</p>
+    </form>
+  </section>
+</div></main>
+<footer class="site-footer"><div class="container footer-row"><p>© 2026 MyBarkChart</p><nav aria-label="Footer navigation"><a href="dashboard.html">Dashboard</a><a href="records.html">Add Record</a><a href="index.html">Home</a></nav></div></footer>
+<script>
+const profile = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartProfile')) || {}; } catch { return {}; } })();
+const petName = profile.pet?.name || 'your pet';
+document.getElementById('record-pet-note').textContent = `Adding to ${petName}’s chart`;
+const providerSelect = document.getElementById('record-provider');
+(profile.clinics || []).forEach((clinic, index) => {
+  const label = clinic.veterinarian || clinic.name;
+  if (!label) return;
+  const option = document.createElement('option'); option.value = label; option.textContent = clinic.veterinarian && clinic.name ? `${clinic.veterinarian} — ${clinic.name}` : label; providerSelect.appendChild(option);
+});
+const otherOption = document.createElement('option'); otherOption.value = 'Other / Not listed'; otherOption.textContent = 'Other / Not listed'; providerSelect.appendChild(otherOption);
+
+const picker = document.querySelector('.record-picker');
+const card = document.getElementById('record-form-card');
+const dynamic = document.getElementById('dynamic-record-fields');
+const title = document.getElementById('form-title');
+const eyebrow = document.getElementById('form-eyebrow');
+let currentType = '';
+const simpleForms = {
+ visit:{title:'Visit / Exam', fields:[['Visit reason','text','e.g., Annual wellness exam'],['Summary','textarea','Exam findings, recommendations, or follow-up']]},
+ vaccination:{title:'Vaccination', fields:[['Vaccine','text','e.g., Rabies'],['Next due date','date','']]},
+ procedure:{title:'Procedure / Surgery', fields:[['Procedure','text','e.g., Dental cleaning'],['Outcome / follow-up','textarea','Recovery instructions or follow-up plan']]},
+ imaging:{title:'Imaging', fields:[['Imaging type','text','e.g., X-ray, ultrasound, MRI'],['Findings','textarea','Key findings from the report']]},
+ diagnosis:{title:'Diagnosis', fields:[['Diagnosis','text','e.g., Osteoarthritis'],['Details','textarea','Severity, location, or care plan']]},
+ other:{title:'Other Record', fields:[['Record title','text','What would you like to call this record?'],['Details','textarea','Enter the important information here']]}
+};
+function labRows(count=5){ return `<div class="lab-entry-intro"><h3>Enter the values from the report</h3><p>Copy each test exactly as it appears. The first row shows an example of what to look for; the gray text disappears when you type.</p></div><div class="lab-entry-table"><div class="lab-entry-labels" aria-hidden="true"><span>Test</span><span>Result</span><span>Unit</span><span>Reference range</span></div><div id="lab-rows">${Array.from({length:count},(_,i)=>labRow(i)).join('')}</div></div><button class="add-lab-rows" type="button" id="add-lab-rows">+ Add 5 more rows</button>`; }
+function labRow(i){ const p=i===0?['e.g., ALT','e.g., 125','e.g., U/L','e.g., 10–125']:['Test name','Result','Unit','Reference range']; return `<div class="lab-entry-row"><label><span>Test</span><input class="form-input lab-test" placeholder="${p[0]}"></label><label><span>Result</span><input class="form-input lab-result" placeholder="${p[1]}"></label><label><span>Unit</span><input class="form-input lab-unit" placeholder="${p[2]}"></label><label><span>Reference range</span><input class="form-input lab-range" placeholder="${p[3]}"></label></div>`; }
+function simpleFields(config){ return `<div class="simple-record-fields">${config.fields.map(([label,type,placeholder])=>`<label class="form-field"><span>${label}</span>${type==='textarea'?`<textarea class="form-input dynamic-field" data-label="${label}" rows="4" placeholder="${placeholder}"></textarea>`:`<input class="form-input dynamic-field" data-label="${label}" type="${type}" placeholder="${placeholder}">`}</label>`).join('')}</div>`; }
+function openType(type){ currentType=type; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.toggle('selected',b.dataset.recordType===type)); const config=type==='lab'?{title:'Lab Results'}:simpleForms[type]; title.textContent=config.title; eyebrow.textContent='New record'; dynamic.innerHTML=type==='lab'?labRows():simpleFields(config); picker.classList.add('picker-collapsed'); card.hidden=false; card.scrollIntoView({behavior:'smooth',block:'start'}); if(type==='lab') document.getElementById('add-lab-rows').addEventListener('click',()=>{ const rows=document.getElementById('lab-rows'); rows.insertAdjacentHTML('beforeend',Array.from({length:5},(_,i)=>labRow(rows.children.length+i)).join('')); }); }
+document.querySelectorAll('.record-type-card').forEach(btn=>btn.addEventListener('click',()=>openType(btn.dataset.recordType)));
+function resetPicker(){ card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.remove('selected')); picker.scrollIntoView({behavior:'smooth',block:'start'}); }
+document.getElementById('change-record-type').addEventListener('click',resetPicker); document.getElementById('cancel-record').addEventListener('click',resetPicker);
+document.getElementById('record-form').addEventListener('submit',e=>{ e.preventDefault(); if(!currentType) return; const record={id:Date.now(),pet:petName,type:currentType,title:title.textContent,date:document.getElementById('record-date').value,provider:providerSelect.value,notes:document.getElementById('record-notes').value.trim(),createdAt:new Date().toISOString()}; if(currentType==='lab'){ record.values=[...document.querySelectorAll('.lab-entry-row')].map(row=>({test:row.querySelector('.lab-test').value.trim(),result:row.querySelector('.lab-result').value.trim(),unit:row.querySelector('.lab-unit').value.trim(),range:row.querySelector('.lab-range').value.trim()})).filter(v=>Object.values(v).some(Boolean)); } else { record.fields=[...document.querySelectorAll('.dynamic-field')].map(f=>({label:f.dataset.label,value:f.value.trim()})).filter(f=>f.value); } const records=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords'))||[]}catch{return[]}})(); records.push(record); localStorage.setItem('myBarkChartRecords',JSON.stringify(records)); window.location.href='dashboard.html'; });
+</script>
+</body></html>

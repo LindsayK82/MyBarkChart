@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Create a MyBarkChart account and set up your pet's health profile." />
+  <title>Create Account | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="signup-page">
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="MyBarkChart home">
+        <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="login.html">Login</a>
+      </div>
+      <a class="nav-button" href="demo.html">Take a Look!</a>
+    </nav>
+  </header>
+
+  <main class="signup-main">
+    <div class="container signup-shell">
+      <section class="signup-intro" aria-labelledby="signup-page-title">
+        <p class="eyebrow">A healthier history starts here</p>
+        <h1 id="signup-page-title">Let’s build your pet’s chart.</h1>
+        <p>We’ll start with the basics, add your pet and veterinary clinics, then you can decide whether to enter health records now or come back to them later.</p>
+        <div class="signup-promise">
+          <span aria-hidden="true">🐾</span>
+          <p><strong>One account, all your pets.</strong><br />You can add more pets from your dashboard after setup.</p>
+        </div>
+      </section>
+
+      <section class="signup-card" aria-label="Create your MyBarkChart account">
+        <div class="signup-progress" aria-label="Signup progress">
+          <div class="progress-step active" data-progress="1"><span>1</span><small>Account</small></div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-progress="2"><span>2</span><small>Pet</small></div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-progress="3"><span>3</span><small>Clinics</small></div>
+          <div class="progress-line"></div>
+          <div class="progress-step" data-progress="4"><span>4</span><small>Records</small></div>
+        </div>
+
+        <form id="signup-form" novalidate>
+          <section class="signup-step active" data-step="1" aria-labelledby="step-1-heading">
+            <div class="signup-card-heading">
+              <p class="step-kicker">Step 1 of 4</p>
+              <h2 id="step-1-heading">Create your account</h2>
+              <p>This is how you’ll sign in to MyBarkChart.</p>
+            </div>
+
+            <div class="form-field">
+              <label for="username">Name or username</label>
+              <input class="form-input" id="username" name="username" type="text" autocomplete="name" placeholder="What should we call you?" required />
+            </div>
+            <div class="form-field">
+              <label for="signup-email">Email address</label>
+              <input class="form-input" id="signup-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+            </div>
+            <div class="form-field">
+              <label for="signup-password">Password</label>
+              <div class="password-wrap">
+                <input class="form-input" id="signup-password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required />
+                <button class="password-toggle signup-password-toggle" type="button" data-target="signup-password">Show</button>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="confirm-password">Confirm password</label>
+              <div class="password-wrap">
+                <input class="form-input" id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Enter it again" required />
+                <button class="password-toggle signup-password-toggle" type="button" data-target="confirm-password">Show</button>
+              </div>
+              <p class="field-error" id="password-error" role="alert"></p>
+            </div>
+
+            <div class="step-actions step-actions-end">
+              <button class="button button-primary next-step" type="button">Continue →</button>
+            </div>
+            <p class="signin-note">Already have an account? <a href="login.html">Log in</a></p>
+          </section>
+
+          <section class="signup-step" data-step="2" aria-labelledby="step-2-heading" hidden>
+            <div class="signup-card-heading">
+              <p class="step-kicker">Step 2 of 4</p>
+              <h2 id="step-2-heading">Tell us about your pet</h2>
+              <p>Start with one pet. You can add the rest from your dashboard later.</p>
+            </div>
+
+            <div class="pet-photo-row">
+              <div class="pet-photo-preview" id="pet-photo-preview" aria-hidden="true">🐾</div>
+              <div>
+                <label class="button button-secondary photo-button" for="pet-photo">Add a photo</label>
+                <input class="visually-hidden" id="pet-photo" name="petPhoto" type="file" accept="image/*" />
+                <p class="form-hint">Optional. JPG, PNG, or another common image format.</p>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="pet-name">Pet’s name</label>
+              <input class="form-input" id="pet-name" name="petName" type="text" placeholder="Sparky" required />
+            </div>
+
+            <div class="form-grid-two">
+              <div class="form-field">
+                <label for="pet-birthday">Birthday <span>(if known)</span></label>
+                <input class="form-input" id="pet-birthday" name="petBirthday" type="date" />
+              </div>
+              <div class="form-field">
+                <label for="pet-age">Approximate age <span>(optional)</span></label>
+                <input class="form-input" id="pet-age" name="petAge" type="text" placeholder="e.g. 8 years" />
+              </div>
+            </div>
+
+            <div class="form-grid-two">
+              <div class="form-field">
+                <label for="pet-breed">Breed <span>(optional)</span></label>
+                <input class="form-input" id="pet-breed" name="petBreed" type="text" placeholder="e.g. Pit bull mix" />
+              </div>
+              <div class="form-field">
+                <label for="pet-weight">Weight</label>
+                <div class="input-with-unit">
+                  <input class="form-input" id="pet-weight" name="petWeight" type="number" min="0" step="0.1" placeholder="77.5" required />
+                  <span>lb</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="button button-secondary back-step" type="button">← Back</button>
+              <button class="button button-primary next-step" type="button">Continue →</button>
+            </div>
+          </section>
+
+          <section class="signup-step" data-step="3" aria-labelledby="step-3-heading" hidden>
+            <div class="signup-card-heading clinic-heading-row">
+              <div>
+                <p class="step-kicker">Step 3 of 4</p>
+                <h2 id="step-3-heading">Add your veterinary clinics</h2>
+                <p>Add your regular vet, specialists, emergency hospital, or any clinic you use. You can also skip this for now.</p>
+              </div>
+              <span class="clinic-count" id="clinic-count">1 of 5</span>
+            </div>
+
+            <div id="clinics-container">
+              <fieldset class="clinic-form" data-clinic="1">
+                <legend>Clinic 1</legend>
+                <div class="form-field">
+                  <label for="clinic-name-1">Clinic name</label>
+                  <input class="form-input" id="clinic-name-1" name="clinicName1" type="text" placeholder="e.g. Greenacres Veterinary Clinic" />
+                </div>
+                <div class="form-grid-two">
+                  <div class="form-field">
+                    <label for="vet-name-1">Veterinarian <span>(optional)</span></label>
+                    <input class="form-input" id="vet-name-1" name="vetName1" type="text" placeholder="Dr. Name" />
+                  </div>
+                  <div class="form-field">
+                    <label for="clinic-phone-1">Phone <span>(optional)</span></label>
+                    <input class="form-input" id="clinic-phone-1" name="clinicPhone1" type="tel" autocomplete="tel" placeholder="(555) 555-5555" />
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label for="clinic-address-1">Address <span>(optional)</span></label>
+                  <input class="form-input" id="clinic-address-1" name="clinicAddress1" type="text" autocomplete="street-address" placeholder="Street, city, state" />
+                </div>
+              </fieldset>
+            </div>
+
+            <button class="add-clinic-button" id="add-clinic" type="button"><span>＋</span> Add a Clinic</button>
+            <p class="clinic-limit" id="clinic-limit" hidden>You’ve added the maximum of five clinics.</p>
+
+            <div class="step-actions">
+              <button class="button button-secondary back-step" type="button">← Back</button>
+              <button class="button button-primary next-step" type="button">Continue →</button>
+            </div>
+          </section>
+
+          <section class="signup-step records-choice-step" data-step="4" aria-labelledby="step-4-heading" hidden>
+            <div class="records-choice-icon" aria-hidden="true">📋</div>
+            <div class="signup-card-heading records-choice-heading">
+              <p class="step-kicker">Step 4 of 4</p>
+              <h2 id="step-4-heading">Would you like to add records?</h2>
+              <p>You can start entering your pet’s health history now, or head to the dashboard and come back whenever you’re ready.</p>
+            </div>
+
+            <div class="record-choice-grid">
+              <a class="record-choice-card record-choice-primary" href="records.html">
+                <span class="choice-icon" aria-hidden="true">＋</span>
+                <strong>Yes, Add Records</strong>
+                <small>Start building the health history</small>
+              </a>
+              <a class="record-choice-card" href="dashboard.html">
+                <span class="choice-icon" aria-hidden="true">→</span>
+                <strong>Not Right Now</strong>
+                <small>Go straight to the patient dashboard</small>
+              </a>
+            </div>
+
+            <button class="back-link back-step" type="button">← Back to clinic information</button>
+            <p class="prototype-note">For this prototype, these buttons lead to the next planned MyBarkChart pages. Account data is not stored yet.</p>
+          </section>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer login-footer">
+    <div class="container footer-layout">
+      <div class="footer-brand">
+        <img src="assets/images/Sparky-logo.png" alt="" />
+        <span>MyBarkChart</span>
+      </div>
+      <p>Made with care for pets and the people keeping track of everything.</p>
+    </div>
+  </footer>
+
+  <template id="clinic-template">
+    <fieldset class="clinic-form">
+      <div class="clinic-legend-row">
+        <legend></legend>
+        <button class="remove-clinic" type="button">Remove</button>
+      </div>
+      <div class="form-field">
+        <label>Clinic name</label>
+        <input class="form-input clinic-name" type="text" placeholder="Clinic name" />
+      </div>
+      <div class="form-grid-two">
+        <div class="form-field">
+          <label>Veterinarian <span>(optional)</span></label>
+          <input class="form-input vet-name" type="text" placeholder="Dr. Name" />
+        </div>
+        <div class="form-field">
+          <label>Phone <span>(optional)</span></label>
+          <input class="form-input clinic-phone" type="tel" placeholder="(555) 555-5555" />
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Address <span>(optional)</span></label>
+        <input class="form-input clinic-address" type="text" placeholder="Street, city, state" />
+      </div>
+    </fieldset>
+  </template>
+
+  <script>
+    const steps = [...document.querySelectorAll('.signup-step')];
+    const progressSteps = [...document.querySelectorAll('.progress-step')];
+    const form = document.getElementById('signup-form');
+    let currentStep = 1;
+
+    function showStep(stepNumber) {
+      currentStep = stepNumber;
+      steps.forEach((step) => {
+        const isActive = Number(step.dataset.step) === stepNumber;
+        step.hidden = !isActive;
+        step.classList.toggle('active', isActive);
+      });
+      progressSteps.forEach((step) => {
+        const number = Number(step.dataset.progress);
+        step.classList.toggle('active', number === stepNumber);
+        step.classList.toggle('complete', number < stepNumber);
+        step.querySelector('span').textContent = number < stepNumber ? '✓' : number;
+      });
+      document.querySelector('.signup-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function validateStep(stepNumber) {
+      const step = document.querySelector(`.signup-step[data-step="${stepNumber}"]`);
+      const requiredFields = [...step.querySelectorAll('[required]')];
+      for (const field of requiredFields) {
+        if (!field.checkValidity()) {
+          field.reportValidity();
+          field.focus();
+          return false;
+        }
+      }
+      if (stepNumber === 1) {
+        const password = document.getElementById('signup-password');
+        const confirm = document.getElementById('confirm-password');
+        const error = document.getElementById('password-error');
+        if (password.value !== confirm.value) {
+          error.textContent = 'Those passwords don’t match yet.';
+          confirm.focus();
+          return false;
+        }
+        error.textContent = '';
+      }
+      return true;
+    }
+
+    document.querySelectorAll('.next-step').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (validateStep(currentStep)) showStep(currentStep + 1);
+      });
+    });
+
+    document.querySelectorAll('.back-step').forEach((button) => {
+      button.addEventListener('click', () => showStep(Math.max(1, currentStep - 1)));
+    });
+
+    document.querySelectorAll('.signup-password-toggle').forEach((button) => {
+      button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.target);
+        const showing = input.type === 'text';
+        input.type = showing ? 'password' : 'text';
+        button.textContent = showing ? 'Show' : 'Hide';
+      });
+    });
+
+    const photoInput = document.getElementById('pet-photo');
+    const photoPreview = document.getElementById('pet-photo-preview');
+    photoInput.addEventListener('change', () => {
+      const file = photoInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        photoPreview.innerHTML = `<img src="${event.target.result}" alt="Pet photo preview" />`;
+        photoPreview.removeAttribute('aria-hidden');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    const clinicsContainer = document.getElementById('clinics-container');
+    const addClinicButton = document.getElementById('add-clinic');
+    const clinicCount = document.getElementById('clinic-count');
+    const clinicLimit = document.getElementById('clinic-limit');
+    const clinicTemplate = document.getElementById('clinic-template');
+
+    function renumberClinics() {
+      const clinics = [...clinicsContainer.querySelectorAll('.clinic-form')];
+      clinics.forEach((clinic, index) => {
+        const number = index + 1;
+        clinic.dataset.clinic = number;
+        const legend = clinic.querySelector('legend');
+        if (legend) legend.textContent = `Clinic ${number}`;
+        const mappings = [
+          ['.clinic-name', 'clinicName'], ['.vet-name', 'vetName'],
+          ['.clinic-phone', 'clinicPhone'], ['.clinic-address', 'clinicAddress']
+        ];
+        mappings.forEach(([selector, base]) => {
+          const input = clinic.querySelector(selector);
+          if (input) input.name = `${base}${number}`;
+        });
+      });
+      clinicCount.textContent = `${clinics.length} of 5`;
+      const atLimit = clinics.length >= 5;
+      addClinicButton.hidden = atLimit;
+      clinicLimit.hidden = !atLimit;
+    }
+
+    addClinicButton.addEventListener('click', () => {
+      if (clinicsContainer.querySelectorAll('.clinic-form').length >= 5) return;
+      const clone = clinicTemplate.content.cloneNode(true);
+      clinicsContainer.appendChild(clone);
+      renumberClinics();
+    });
+
+    clinicsContainer.addEventListener('click', (event) => {
+      if (!event.target.classList.contains('remove-clinic')) return;
+      event.target.closest('.clinic-form').remove();
+      renumberClinics();
+    });
+
+    form.addEventListener('submit', (event) => event.preventDefault());
+  </script>
+</body>
+</html>
