@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore sample lab trends in Sparky's read-only MyBarkChart demo." />
+  <title>Lab History | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="labs.js" defer></script>
+</head>
+<body class="demo-page labs-body">
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Demo navigation">
+      <a class="brand" href="index.html" aria-label="MyBarkChart home">
+        <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+      <div class="nav-links demo-nav-links">
+        <a href="demo.html">Overview</a>
+        <a href="demo.html#medications">Medications</a>
+        <a href="records.html">Records</a>
+        <a href="labs.html" aria-current="page">Labs</a>
+        <a href="demo.html#notes">Notes</a>
+      </div>
+      <a class="nav-button demo-exit" href="index.html">Exit demo</a>
+    </nav>
+  </header>
+
+  <main class="labs-main">
+    <section class="demo-banner" aria-label="Demo notice">
+      <div class="container demo-banner-inner">
+        <span class="demo-badge">Read-only demo</span>
+        <p>Sample lab values only — these are not Sparky's actual laboratory results.</p>
+      </div>
+    </section>
+
+    <section class="labs-hero">
+      <div class="container labs-hero-layout">
+        <div>
+          <p class="eyebrow">Sparky's chart · Lab history</p>
+          <h1>See the story behind the numbers.</h1>
+          <p class="labs-lead">Track results across visits, compare them with reference ranges, and spot changes that are easy to miss when reports live in different places.</p>
+        </div>
+        <div class="labs-pet-card">
+          <img src="assets/images/sparky2.jpg" alt="Sparky wearing a colorful sweater and bow" />
+          <div><strong>Sparky</strong><span>Dog · 9 years old</span></div>
+          <span class="status-pill">Demo patient</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="container labs-layout">
+      <section class="lab-panel lab-trend-panel" aria-labelledby="trend-title">
+        <div class="lab-panel-heading">
+          <div><p class="eyebrow">Trend explorer</p><h2 id="trend-title">Lab history</h2></div>
+          <label class="lab-select-label" for="lab-select">Show
+            <select id="lab-select" class="lab-select">
+              <option value="alp">ALP</option>
+              <option value="alt">ALT</option>
+              <option value="creatinine">Creatinine</option>
+              <option value="bun">BUN</option>
+              <option value="upc">UPC</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="lab-summary-grid" aria-live="polite">
+          <article class="lab-summary-card"><span>Latest result</span><strong id="latest-value">1,380 U/L</strong><small id="latest-date">Oct 1, 2026</small></article>
+          <article class="lab-summary-card"><span>Reference range</span><strong id="reference-value">20–150 U/L</strong><small>Example laboratory range</small></article>
+          <article class="lab-summary-card"><span>Trend</span><strong id="trend-value">Increasing</strong><small id="trend-note">Up across recent checks</small></article>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title-row"><div><h3 id="chart-title">ALP over time</h3><p id="chart-description">Sample alkaline phosphatase history</p></div><div class="chart-legend"><span class="legend-dot"></span>Result <span class="legend-range"></span>Reference range</div></div>
+          <div class="lab-chart-wrap">
+            <svg id="lab-chart" class="lab-chart" viewBox="0 0 760 330" role="img" aria-labelledby="chart-title chart-description"></svg>
+          </div>
+          <p class="chart-footnote">Demo values are intentionally fictional and are shown only to demonstrate MyBarkChart's trend view.</p>
+        </div>
+      </section>
+
+      <aside class="labs-side">
+        <section class="side-card lab-explainer"><span class="side-icon">📈</span><p class="eyebrow">Why trends matter</p><h2>One result is a snapshot.</h2><p>A history can show whether a value is stable, improving, or changing over time — even when tests came from different visits.</p></section>
+        <section class="side-card"><p class="eyebrow">In a real chart</p><h2>Keep the context, too.</h2><ul class="lab-feature-list"><li>Test date and laboratory</li><li>Result and units</li><li>Reference range</li><li>High, low, or in-range status</li><li>Linked visit or uploaded report</li></ul></section>
+        <a class="side-card lab-record-link" href="records.html"><span>📄</span><div><strong>Need the original report?</strong><p>Browse sample records →</p></div></a>
+      </aside>
+    </div>
+
+    <section class="container lab-history-section" aria-labelledby="history-title">
+      <div class="dashboard-heading"><div><p class="eyebrow">Results by date</p><h2 id="history-title">Recent lab panels</h2></div><span class="readonly-label">View only</span></div>
+      <div class="lab-table-wrap">
+        <table class="lab-table">
+          <thead><tr><th>Date</th><th>ALP</th><th>ALT</th><th>Creatinine</th><th>BUN</th><th>UPC</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Oct 1, 2026</strong></td><td><span class="result-high">1,380 H</span></td><td>62</td><td>1.4</td><td>25</td><td><span class="result-high">6.8 H</span></td><td>Follow-up panel</td></tr>
+            <tr><td><strong>Aug 28, 2026</strong></td><td><span class="result-high">1,120 H</span></td><td>68</td><td>1.3</td><td>24</td><td><span class="result-high">5.4 H</span></td><td>Wellness panel</td></tr>
+            <tr><td><strong>Jun 10, 2026</strong></td><td><span class="result-high">890 H</span></td><td>74</td><td>1.2</td><td>22</td><td>—</td><td>Recheck</td></tr>
+            <tr><td><strong>Apr 9, 2026</strong></td><td><span class="result-high">720 H</span></td><td>83</td><td>1.2</td><td>21</td><td>—</td><td>Routine panel</td></tr>
+            <tr><td><strong>Feb 25, 2026</strong></td><td><span class="result-high">560 H</span></td><td><span class="result-high">310 H</span></td><td>1.1</td><td>20</td><td>—</td><td>Diagnostic panel</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="lab-disclaimer"><strong>Demo data only.</strong> Values, dates, ranges, and statuses on this page are fictional examples and should not be used for medical decisions.</div>
+    </section>
+
+    <section class="demo-cta"><div class="container demo-cta-card"><div><p class="eyebrow">Back to Sparky</p><h2>Labs are part of the whole health story.</h2><p>Return to the demo dashboard to see medications, appointments, records, and notes together.</p></div><a class="button button-primary" href="demo.html">Back to overview</a></div></section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-layout"><div class="footer-brand"><img src="assets/images/Sparky-logo.png" alt="" /><span>MyBarkChart</span></div><p>Demo chart · Sample information only</p></div></footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Log in to MyBarkChart to access your pet health information." />
+  <title>Login | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="login-page">
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Primary navigation">
+      <a class="brand" href="index.html" aria-label="MyBarkChart home">
+        <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="login.html" aria-current="page">Login</a>
+      </div>
+      <a class="nav-button" href="demo.html">Take a Look!</a>
+    </nav>
+  </header>
+
+  <main class="login-main">
+    <div class="container login-shell">
+      <section class="login-intro" aria-labelledby="login-page-title">
+        <p class="eyebrow">Your pet's story, organized</p>
+        <h1 id="login-page-title">Welcome back to MyBarkChart.</h1>
+        <p>Log in to pick up where you left off—with medications, records, labs, appointments, and all the little details in one familiar place.</p>
+        <div class="login-points" aria-label="Account benefits">
+          <div class="login-point"><span aria-hidden="true">🐾</span> Your pets, together in one account</div>
+          <div class="login-point"><span aria-hidden="true">📂</span> Health history when you need it</div>
+          <div class="login-point"><span aria-hidden="true">📈</span> Lab trends that are easier to follow</div>
+        </div>
+      </section>
+
+      <section class="login-card" aria-labelledby="login-heading">
+        <div class="login-card-heading">
+          <h2 id="login-heading">Log in</h2>
+          <p>Enter your account information below.</p>
+        </div>
+
+        <form class="login-form" id="login-form">
+          <div class="form-field">
+            <label for="email">Email address</label>
+            <input class="form-input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+          </div>
+
+          <div class="form-field">
+            <label for="password">Password</label>
+            <div class="password-wrap">
+              <input class="form-input" id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required />
+              <button class="password-toggle" id="password-toggle" type="button" aria-label="Show password">Show</button>
+            </div>
+          </div>
+
+          <div class="form-helper-row">
+            <a class="login-link prototype-link" href="#">Forgot password?</a>
+          </div>
+
+          <button class="button button-primary login-submit" type="submit">Log In</button>
+          <p class="prototype-message" id="prototype-message" role="status" aria-live="polite">Login is part of this front-end prototype. Secure account authentication will be connected before MyBarkChart accepts real user accounts.</p>
+        </form>
+
+        <div class="login-divider"><span>New to MyBarkChart?</span></div>
+
+        <div class="login-secondary-actions">
+          <a class="button button-secondary create-account-btn prototype-link" href="#">Create an account</a>
+          <a class="demo-login-link" href="demo.html">Just looking around? Explore Sparky's demo →</a>
+        </div>
+
+        <div class="login-security-note">
+          <span aria-hidden="true">🔒</span>
+          <span>This page is currently a visual prototype. MyBarkChart does not store or authenticate passwords yet.</span>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer login-footer">
+    <div class="container footer-layout">
+      <div class="footer-brand">
+        <img src="assets/images/Sparky-logo.png" alt="" />
+        <span>MyBarkChart</span>
+      </div>
+      <p>Made with care for pets and the people keeping track of everything.</p>
+    </div>
+  </footer>
+
+  <script>
+    const password = document.getElementById('password');
+    const toggle = document.getElementById('password-toggle');
+    const form = document.getElementById('login-form');
+    const message = document.getElementById('prototype-message');
+
+    toggle.addEventListener('click', () => {
+      const showing = password.type === 'text';
+      password.type = showing ? 'password' : 'text';
+      toggle.textContent = showing ? 'Show' : 'Hide';
+      toggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      message.classList.add('show');
+    });
+
+    document.querySelectorAll('.prototype-link').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        message.textContent = 'This account feature will be connected when secure authentication is added to MyBarkChart.';
+        message.classList.add('show');
+      });
+    });
+  </script>
+</body>
+</html>

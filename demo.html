@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore a read-only sample MyBarkChart pet health dashboard featuring Sparky." />
+  <title>Sparky's Demo Chart | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="demo-page">
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Demo navigation">
+      <a class="brand" href="index.html" aria-label="MyBarkChart home">
+        <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+      <div class="nav-links demo-nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#medications">Medications</a>
+        <a href="records.html">Records</a>
+        <a href="labs.html">Labs</a>
+        <a href="#notes">Notes</a>
+      </div>
+      <a class="nav-button demo-exit" href="index.html">Exit demo</a>
+    </nav>
+  </header>
+
+  <main class="demo-main">
+    <section class="demo-banner" aria-label="Demo notice">
+      <div class="container demo-banner-inner">
+        <span class="demo-badge">Read-only demo</span>
+        <p>You're exploring a sample chart. Nothing here can be changed, deleted, or accidentally booped.</p>
+      </div>
+    </section>
+
+    <section class="pet-hero" id="overview">
+      <div class="container pet-hero-layout">
+        <div class="pet-profile">
+          <img class="pet-photo" src="assets/images/sparky2.jpg" alt="Sparky wearing a colorful sweater and bow" />
+          <div>
+            <p class="eyebrow">Demo patient</p>
+            <h1>Sparky</h1>
+            <p class="pet-meta">Dog · Pit bull mix · 9 years old</p>
+            <div class="pet-tags" aria-label="Sparky's profile tags">
+              <span>77.5 lb</span><span>Spayed female</span><span>Very good girl</span>
+            </div>
+          </div>
+        </div>
+        <div class="demo-note">
+          <span aria-hidden="true">🐾</span>
+          <p><strong>Sparky is real.</strong> The chart entries on this demo are simplified examples created to show how MyBarkChart works.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="container dashboard-layout">
+      <div class="dashboard-main">
+        <section class="dashboard-section" aria-labelledby="glance-title">
+          <div class="dashboard-heading">
+            <div><p class="eyebrow">Today</p><h2 id="glance-title">Health at a glance</h2></div>
+            <span class="status-pill">Doing okay</span>
+          </div>
+          <div class="stat-grid">
+            <article class="stat-card"><span class="stat-icon">💊</span><p>Current medications</p><strong>3</strong><small>Schedules saved</small></article>
+            <article class="stat-card"><span class="stat-icon">🩺</span><p>Next follow-up</p><strong>Oct 16</strong><small>Bloodwork + urine check</small></article>
+            <article class="stat-card"><span class="stat-icon">⚖️</span><p>Latest weight</p><strong>77.5</strong><small>pounds</small></article>
+            <a class="stat-card stat-card-link" href="labs.html"><span class="stat-icon">📈</span><p>Lab trends</p><strong>5</strong><small>Values tracked over time →</small></a>
+          </div>
+        </section>
+
+        <section class="dashboard-section" id="medications" aria-labelledby="med-title">
+          <div class="dashboard-heading"><div><p class="eyebrow">Medication cabinet</p><h2 id="med-title">Current medications</h2></div><span class="readonly-label">View only</span></div>
+          <div class="med-list">
+            <article class="med-row"><div class="med-symbol">U</div><div class="med-info"><h3>Ursodiol</h3><p>Liver and gallbladder support</p></div><div class="med-schedule"><strong>Twice daily</strong><span>Morning + evening</span></div></article>
+            <article class="med-row"><div class="med-symbol">T</div><div class="med-info"><h3>Telmisartan</h3><p>Kidney and protein-loss support</p></div><div class="med-schedule"><strong>Once daily</strong><span>Daily schedule</span></div></article>
+            <article class="med-row"><div class="med-symbol">C</div><div class="med-info"><h3>Clopidogrel</h3><p>Part of current care plan</p></div><div class="med-schedule"><strong>Once daily</strong><span>Daily schedule</span></div></article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" id="records" aria-labelledby="records-title">
+          <div class="dashboard-heading"><div><p class="eyebrow">Health history</p><h2 id="records-title">Recent records</h2></div><a class="text-link" href="records.html">Browse sample records →</a></div>
+          <div class="history-list">
+            <article class="history-row"><time datetime="2026-10-01"><span>Oct</span><strong>01</strong></time><div><span class="record-chip">Lab</span><h3>Urine protein follow-up</h3><p>Follow-up result saved to the chart and care plan updated.</p></div></article>
+            <article class="history-row"><time datetime="2026-09-24"><span>Sep</span><strong>24</strong></time><div><span class="record-chip">Imaging</span><h3>Internal medicine visit</h3><p>Ultrasound findings and specialist recommendations added.</p></div></article>
+            <article class="history-row"><time datetime="2026-09-21"><span>Sep</span><strong>21</strong></time><div><span class="record-chip">Visit</span><h3>New concern evaluated</h3><p>Exam notes, follow-up plan, and a new health concern recorded.</p></div></article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" id="notes" aria-labelledby="notes-title">
+          <div class="dashboard-heading"><div><p class="eyebrow">Pet-parent notes</p><h2 id="notes-title">Things I want to remember</h2></div><span class="readonly-label">View only</span></div>
+          <div class="note-card">
+            <div class="note-pin" aria-hidden="true">📝</div>
+            <div><h3>Questions for the next visit</h3><p>Ask how the new medication is working, whether repeat labs are improving, and when it will be safe to move forward with the next procedure.</p><span>Added Oct 3 · Sample note</span></div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="dashboard-side" aria-label="Sparky's chart summary">
+        <section class="side-card next-up">
+          <p class="eyebrow">Next up</p><h2>Follow-up visit</h2><div class="calendar-date"><span>OCT</span><strong>16</strong></div><p>Bring Sparky and a fresh urine sample for follow-up testing.</p><span class="side-muted">Sample appointment</span>
+        </section>
+        <section class="side-card"><p class="eyebrow">Quick info</p><dl class="quick-info"><div><dt>Primary vet</dt><dd>Sample Veterinary Clinic</dd></div><div><dt>Diet</dt><dd>Prescription multi-organ support</dd></div><div><dt>Allergies</dt><dd>None listed</dd></div><div><dt>Microchip</dt><dd>On file</dd></div></dl></section>
+        <section class="side-card emergency-card"><span aria-hidden="true">💚</span><div><h2>Share the important stuff</h2><p>A real MyBarkChart account could keep key information ready when another vet needs the history.</p></div></section>
+      </aside>
+    </div>
+
+    <section class="demo-cta">
+      <div class="container demo-cta-card"><div><p class="eyebrow">End of the tour</p><h2>That’s the idea: less remembering, more caring.</h2><p>This demo is read-only, but a personal chart would be built around your own pet’s health story.</p></div><a class="button button-primary" href="index.html">Back to MyBarkChart</a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-layout"><div class="footer-brand"><img src="assets/images/Sparky-logo.png" alt="" /><span>MyBarkChart</span></div><p>Demo chart · Sample information only</p></div></footer>
+</body>
+</html>

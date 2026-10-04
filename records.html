@@ -8,7 +8,10 @@
       content="Browse sample pet visits, vaccinations, and lab records."
     />
     <title>Records | MyBarkChart</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
@@ -18,7 +21,8 @@
           <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="records.html" aria-current="page">Records</a>
-            <a href="index.html#demo">Demo</a>
+            <a href="labs.html">Labs</a>
+            <a href="demo.html">Demo</a>
           </div>
           <a class="primary-btn" href="index.html#login">Log in</a>
         </nav>
@@ -32,7 +36,7 @@
             <p class="eyebrow">Pet health history</p>
             <h1>Records</h1>
             <p class="lead">
-              Keep visit notes, vaccinations, and lab results together. These
+              Keep visit notes, vaccinations, imaging, and uploaded reports together. These
               sample entries demonstrate how records can be organized.
             </p>
           </div>
@@ -67,18 +71,10 @@
             </div>
           </section>
 
-          <section class="record-group" aria-labelledby="labs-heading">
-            <h2 id="labs-heading">Lab results</h2>
-            <div class="record-list">
-              <article class="record-item">
-                <div>
-                  <span class="record-type">Bloodwork</span>
-                  <h3>CBC review</h3>
-                  <p>Complete blood count results saved for comparison.</p>
-                </div>
-                <time datetime="2026-09-15">Sep 15, 2026</time>
-              </article>
-            </div>
+          <section class="record-group lab-promo" aria-labelledby="labs-heading">
+            <h2 id="labs-heading">Looking for lab results?</h2>
+            <p>Lab values now have their own home, where results can be compared across dates and viewed as trends.</p>
+            <a class="button button-primary" href="labs.html">Explore sample labs →</a>
           </section>
         </div>
       </section>
@@ -89,7 +85,8 @@
         <p>© 2026 MyBarkChart</p>
         <nav aria-label="Footer navigation">
           <a href="index.html">Home</a>
-          <a href="index.html#demo">Demo</a>
+          <a href="labs.html">Labs</a>
+          <a href="demo.html">Demo</a>
         </nav>
       </div>
     </footer>
