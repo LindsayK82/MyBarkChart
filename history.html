@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse your pet's health history in MyBarkChart." />
+  <title>Records History | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="history-page">
+<header class="site-header"><div class="container"><nav class="top-nav" aria-label="Main navigation">
+  <a class="brand" href="index.html" aria-label="MyBarkChart home"><img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" /><span class="brand-name">MyBarkChart</span></a>
+  <div class="nav-links"><a href="dashboard.html">Dashboard</a><a href="history.html" aria-current="page">Records</a><a href="labs.html">Labs</a></div>
+  <a class="primary-btn" href="records.html">+ Add record</a>
+</nav></div></header>
+
+<main class="history-main"><div class="container history-shell">
+  <section class="history-hero">
+    <div><p class="eyebrow">The whole story, in one place</p><h1>Records history</h1><p class="lead" id="history-lead">Browse your pet’s health history by year or record type.</p></div>
+    <a class="button button-primary history-add" href="records.html">+ Add a record</a>
+  </section>
+
+  <section class="history-toolbar" aria-label="Record filters">
+    <div class="history-filters" id="history-filters">
+      <button class="history-filter active" type="button" data-filter="all">All <span id="count-all">0</span></button>
+      <button class="history-filter" type="button" data-filter="visit">🩺 Visits <span id="count-visit">0</span></button>
+      <button class="history-filter" type="button" data-filter="lab">🧪 Labs <span id="count-lab">0</span></button>
+      <button class="history-filter" type="button" data-filter="diagnosis">📋 Diagnoses <span id="count-diagnosis">0</span></button>
+      <button class="history-filter" type="button" data-filter="imaging">🩻 Imaging <span id="count-imaging">0</span></button>
+      <button class="history-filter" type="button" data-filter="procedure">🏥 Procedures <span id="count-procedure">0</span></button>
+      <button class="history-filter" type="button" data-filter="vaccination">💉 Vaccines <span id="count-vaccination">0</span></button>
+      <button class="history-filter" type="button" data-filter="other">🐾 Other <span id="count-other">0</span></button>
+    </div>
+  </section>
+
+  <section id="history-content" aria-live="polite"></section>
+</div></main>
+<footer class="site-footer"><div class="container footer-row"><p>© 2026 MyBarkChart</p><nav aria-label="Footer navigation"><a href="dashboard.html">Dashboard</a><a href="history.html">Records</a><a href="records.html">Add Record</a><a href="index.html">Home</a></nav></div></footer>
+
+<script>
+const profile=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartProfile'))||{}}catch{return{}}})();
+const petName=profile.pet?.name||'your pet';
+document.getElementById('history-lead').textContent=`Browse ${petName}’s health history by year or record type.`;
+const records=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords'))||[]}catch{return[]}})();
+const meta={visit:{label:'Visit / Exam',icon:'🩺'},lab:{label:'Lab Results',icon:'🧪'},diagnosis:{label:'Diagnosis',icon:'📋'},imaging:{label:'Imaging',icon:'🩻'},procedure:{label:'Procedure / Surgery',icon:'🏥'},vaccination:{label:'Vaccination',icon:'💉'},other:{label:'Other',icon:'🐾'}};
+const escapeHTML=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const dateLabel=value=>{if(!value)return'Date not entered';const d=new Date(`${value}T12:00:00`);return Number.isNaN(d.getTime())?value:d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});};
+const yearOf=r=>r.date&&/^\d{4}/.test(r.date)?r.date.slice(0,4):'Undated';
+function summary(record){
+ if(record.type==='lab'){const values=record.values||[];return values.length?`${values.length} lab value${values.length===1?'':'s'} recorded`:'Lab report';}
+ const fields=record.fields||[];return fields[0]?.value||record.notes||meta[record.type]?.label||record.title||'Health record';
+}
+function detailHTML(record){
+ let body='';
+ if(record.type==='lab'&&(record.values||[]).length){body=`<div class="history-lab-table"><div class="history-lab-head"><span>Test</span><span>Result</span><span>Unit</span><span>Reference range</span></div>${record.values.map(v=>`<div class="history-lab-row"><strong>${escapeHTML(v.test||'—')}</strong><span>${escapeHTML(v.result||'—')}</span><span>${escapeHTML(v.unit||'—')}</span><span>${escapeHTML(v.range||'—')}</span></div>`).join('')}</div>`;}
+ else if((record.fields||[]).length){body=`<dl class="history-details">${record.fields.map(f=>`<div><dt>${escapeHTML(f.label)}</dt><dd>${escapeHTML(f.value)}</dd></div>`).join('')}</dl>`;}
+ const notes=record.notes?`<div class="history-notes"><strong>Notes</strong><p>${escapeHTML(record.notes)}</p></div>`:'';
+ return `${body}${notes}${!body&&!notes?'<p class="history-no-details">No additional details were entered for this record.</p>':''}`;
+}
+function cardHTML(record){const m=meta[record.type]||meta.other;return `<article class="history-card" data-type="${escapeHTML(record.type||'other')}"><button class="history-card-summary" type="button" aria-expanded="false"><span class="history-type-icon">${m.icon}</span><span class="history-card-copy"><span class="history-date">${escapeHTML(dateLabel(record.date))}</span><strong>${escapeHTML(record.title||m.label)}</strong><small>${escapeHTML(summary(record))}</small>${record.provider?`<span class="history-provider">${escapeHTML(record.provider)}</span>`:''}</span><span class="history-chevron" aria-hidden="true">⌄</span></button><div class="history-card-detail" hidden>${detailHTML(record)}</div></article>`;}
+function render(filter='all'){
+ const content=document.getElementById('history-content');
+ const filtered=records.filter(r=>filter==='all'||r.type===filter).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ if(!records.length){content.innerHTML=`<div class="history-empty"><span>📚</span><h2>${escapeHTML(petName)}’s history starts here</h2><p>Visits, labs, diagnoses, imaging, procedures, and vaccinations will appear here as you add them.</p><a class="button button-primary" href="records.html">Add the first record</a></div>`;return;}
+ if(!filtered.length){content.innerHTML=`<div class="history-empty history-empty-small"><span>🔎</span><h2>No ${escapeHTML(meta[filter]?.label||filter)} records yet</h2><p>Try another filter or add a new record to ${escapeHTML(petName)}’s chart.</p></div>`;return;}
+ const groups={};filtered.forEach(r=>(groups[yearOf(r)]??=[]).push(r));
+ content.innerHTML=Object.entries(groups).sort(([a],[b])=>b.localeCompare(a)).map(([year,items])=>`<section class="history-year"><div class="history-year-heading"><h2>${escapeHTML(year)}</h2><span>${items.length} record${items.length===1?'':'s'}</span></div><div class="history-year-list">${items.map(cardHTML).join('')}</div></section>`).join('');
+ content.querySelectorAll('.history-card-summary').forEach(btn=>btn.addEventListener('click',()=>{const detail=btn.nextElementSibling;const open=btn.getAttribute('aria-expanded')==='true';btn.setAttribute('aria-expanded',String(!open));detail.hidden=open;}));
+}
+['all','visit','lab','diagnosis','imaging','procedure','vaccination','other'].forEach(type=>{const el=document.getElementById(`count-${type}`);if(el)el.textContent=type==='all'?records.length:records.filter(r=>r.type===type).length;});
+document.querySelectorAll('.history-filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.history-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render(btn.dataset.filter);}));
+render();
+</script>
+</body></html>
