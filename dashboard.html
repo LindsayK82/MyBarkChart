@@ -18,7 +18,7 @@
         <span class="brand-name">MyBarkChart</span>
       </a>
       <div class="nav-links demo-nav-links">
-        <a href="#overview">Overview</a><a href="medicine.html">Medicine Cabinet</a><a href="conditions.html">Conditions</a><a href="history.html">Records</a><a href="labs.html">Labs</a><a href="profile.html">Profile</a><a href="#notes">Notes</a>
+        <a href="#overview">Overview</a><a href="medicine.html">Medicine Cabinet</a><a href="conditions.html">Conditions</a><a href="vaccinations.html">Vaccinations</a><a href="history.html">Records</a><a href="labs.html">Labs</a><a href="profile.html">Profile</a><a href="notes.html">Notes & Appointments</a>
       </div>
       <a class="nav-button" href="index.html">Log out</a>
     </nav>
@@ -66,13 +66,13 @@
         </section>
 
         <section class="dashboard-section" id="notes" aria-labelledby="notes-title">
-          <div class="dashboard-heading"><div><p class="eyebrow">Pet-parent notes</p><h2 id="notes-title">Things I want to remember</h2></div><button class="text-button" type="button">+ Add note</button></div>
+          <div class="dashboard-heading"><div><p class="eyebrow">Pet-parent notes</p><h2 id="notes-title">Things I want to remember</h2></div><a class="text-button" href="notes.html?action=note">+ Add note</a></div>
           <div class="dashboard-empty"><span aria-hidden="true">📝</span><div><h3>Nothing to remember yet</h3><p>Keep questions, symptoms, reminders, or anything else you want handy for the next visit.</p></div></div>
         </section>
       </div>
 
       <aside class="dashboard-side" aria-label="Patient chart summary">
-        <section class="side-card next-up"><p class="eyebrow">Next up</p><h2>No appointment saved</h2><div class="calendar-date empty-calendar"><span>ADD</span><strong>+</strong></div><p>When you add a follow-up or appointment, it will be easy to spot here.</p><button class="text-button" type="button">+ Add appointment</button></section>
+        <section class="side-card next-up"><p class="eyebrow">Next up</p><h2>No appointment saved</h2><div class="calendar-date empty-calendar"><span>ADD</span><strong>+</strong></div><p>When you add a follow-up or appointment, it will be easy to spot here.</p><a class="text-button" href="notes.html?action=appointment">+ Add appointment</a></section>
         <section class="side-card"><p class="eyebrow">Quick info</p><dl class="quick-info"><div><dt>Primary clinic</dt><dd id="primary-clinic">Not added yet</dd></div><div><dt>Veterinarian</dt><dd id="primary-vet">Not added yet</dd></div><div><dt>Clinic phone</dt><dd id="clinic-phone">Not added yet</dd></div><div><dt>Birthday / age</dt><dd id="quick-age">Not added yet</dd></div></dl><div id="additional-clinics"></div></section>
         <section class="side-card emergency-card"><span aria-hidden="true">🐾</span><div><h2>Build the story over time</h2><p>Your chart starts simple. Add records, labs, medications, and notes whenever you have them.</p></div></section>
       </aside>

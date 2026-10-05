@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track your pet's vaccination records and due dates in MyBarkChart." />
+  <title>Vaccinations | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="demo-page vaccination-page">
+<header class="site-header">
+  <nav class="navbar container" aria-label="Patient navigation">
+    <a class="brand" href="index.html" aria-label="MyBarkChart home"><img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" /><span class="brand-name">MyBarkChart</span></a>
+    <div class="nav-links demo-nav-links"><a href="dashboard.html">Overview</a><a href="medicine.html">Medicine Cabinet</a><a href="conditions.html">Conditions</a><a class="active" href="vaccinations.html">Vaccinations</a><a href="history.html">Records</a><a href="labs.html">Labs</a><a href="profile.html">Profile</a></div>
+    <a class="nav-button" href="index.html">Log out</a>
+  </nav>
+</header>
+<main class="vaccination-main">
+  <section class="container vaccination-shell">
+    <div class="vaccination-hero"><div><p class="eyebrow">Preventive care</p><h1>Vaccinations</h1><p class="lead" id="vax-lead">Keep vaccine dates and due dates easy to find.</p></div><button class="button button-primary" id="show-vax-form" type="button">+ Add vaccination</button></div>
+    <div class="vax-summary" aria-label="Vaccination summary"><div><strong id="current-count">0</strong><span>Current</span></div><div><strong id="soon-count">0</strong><span>Due soon</span></div><div><strong id="overdue-count">0</strong><span>Overdue</span></div></div>
+    <section class="settings-card vax-form-card" id="vax-form-card" hidden>
+      <div class="settings-card-head"><div><p class="eyebrow">Vaccination record</p><h2 id="vax-form-title">Add vaccination</h2></div><button class="mini-button" type="button" id="cancel-vax">Cancel</button></div>
+      <form id="vax-form">
+        <div class="settings-form-grid">
+          <label class="settings-field"><span>Vaccine name *</span><input class="settings-input" id="vax-name" required placeholder="e.g., Rabies, DHPP, Bordetella"></label>
+          <label class="settings-field"><span>Clinic or veterinarian</span><select class="settings-select" id="vax-provider"><option value="">Select if known</option></select></label>
+          <label class="settings-field"><span>Date given *</span><input class="settings-input" type="date" id="vax-date" required></label>
+          <label class="settings-field"><span>Next due date</span><input class="settings-input" type="date" id="vax-due"><small>Leave blank if no due date was provided.</small></label>
+          <label class="settings-field"><span>Lot / serial number</span><input class="settings-input" id="vax-lot" placeholder="Optional"></label>
+          <label class="settings-field full"><span>Notes</span><textarea class="settings-textarea" id="vax-notes" placeholder="Certificate number, reactions, booster instructions, or anything else to remember"></textarea></label>
+        </div>
+        <div class="settings-actions"><button class="button button-primary" type="submit">Save vaccination</button><span class="save-note" id="vax-save-note"></span></div>
+      </form>
+    </section>
+    <section class="vaccination-section"><div class="dashboard-heading"><div><p class="eyebrow">At a glance</p><h2>Current vaccinations</h2></div></div><div class="vax-list" id="current-vax-list"></div></section>
+    <section class="vaccination-section"><button class="vax-history-toggle" id="history-toggle" type="button" aria-expanded="false"><span><span class="eyebrow">Past doses</span><strong>Vaccination history</strong></span><span id="history-chevron">⌄</span></button><div class="vax-list" id="history-vax-list" hidden></div></section>
+  </section>
+</main>
+<footer class="site-footer"><div class="container footer-row"><p>© 2026 MyBarkChart</p><nav aria-label="Footer navigation"><a href="dashboard.html">Dashboard</a><a href="vaccinations.html">Vaccinations</a><a href="records.html">Add Record</a><a href="index.html">Home</a></nav></div></footer>
+<script>
+const profile=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartProfile'))||{}}catch{return{}}})();
+const petName=profile.pet?.name||profile.petName||'Your pet';document.getElementById('vax-lead').textContent=`Keep ${petName}’s vaccine dates and due dates easy to find.`;
+const provider=document.getElementById('vax-provider');(profile.clinics||[]).forEach(c=>{const name=c.name||c.clinicName;if(!name)return;const vets=Array.isArray(c.vets)?c.vets.filter(Boolean):[];const opt=document.createElement('option');opt.value=vets.length?`${name} — ${vets.join(', ')}`:name;opt.textContent=opt.value;provider.appendChild(opt)});
+const readRecords=()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords'))||[]}catch{return[]}};const writeRecords=r=>localStorage.setItem('myBarkChartRecords',JSON.stringify(r));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=d=>{if(!d)return 'Not recorded';const x=new Date(d+'T12:00:00');return x.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})};
+function vaccineData(r){const f=Object.fromEntries((r.fields||[]).map(x=>[x.label,x.value]));return {name:f.Vaccine||f['Vaccine name']||r.title||'Vaccination',due:f['Next due date']||'',lot:f['Lot / serial number']||'',notes:r.notes||'',date:r.date||'',provider:r.provider||''}}
+function status(v){if(!v.due)return {key:'current',label:'Current'};const today=new Date();today.setHours(0,0,0,0);const due=new Date(v.due+'T00:00:00');const days=Math.ceil((due-today)/86400000);if(days<0)return {key:'overdue',label:'Overdue'};if(days<=60)return {key:'soon',label:'Due soon'};return {key:'current',label:'Current'}}
+function allVaccines(){return readRecords().filter(r=>r.type==='vaccination').sort((a,b)=>(b.date||'').localeCompare(a.date||''))}
+function render(){const recs=allVaccines();const latest=new Map();recs.forEach(r=>{const v=vaccineData(r);const k=v.name.trim().toLowerCase();if(!latest.has(k))latest.set(k,r)});const current=[...latest.values()];const currentIds=new Set(current.map(r=>r.id));const history=recs.filter(r=>!currentIds.has(r.id));const stats={current:0,soon:0,overdue:0};current.forEach(r=>stats[status(vaccineData(r)).key]++);document.getElementById('current-count').textContent=stats.current;document.getElementById('soon-count').textContent=stats.soon;document.getElementById('overdue-count').textContent=stats.overdue;
+ const list=document.getElementById('current-vax-list');list.innerHTML=current.length?current.map(card).join(''):`<div class="clinic-empty"><strong>No vaccinations added yet.</strong><p>Add the first vaccine to start ${esc(petName)}’s vaccination record.</p></div>`;const hist=document.getElementById('history-vax-list');hist.innerHTML=history.length?history.map(card).join(''):`<div class="clinic-empty">Earlier doses will collect here when newer doses of the same vaccine are added.</div>`;document.querySelectorAll('[data-edit-vax]').forEach(b=>b.addEventListener('click',()=>editVax(Number(b.dataset.editVax))));}
+function card(r){const v=vaccineData(r),s=status(v);return `<article class="vax-card"><div class="vax-card-top"><div><span class="vax-status ${s.key}">${s.label}</span><h3>${esc(v.name)}</h3><p>Given ${esc(fmt(v.date))}${v.provider?` · ${esc(v.provider)}`:''}</p></div><button class="mini-button" type="button" data-edit-vax="${r.id}">Edit</button></div><dl class="vax-details"><div><dt>Next due</dt><dd>${esc(v.due?fmt(v.due):'Not recorded')}</dd></div>${v.lot?`<div><dt>Lot / serial</dt><dd>${esc(v.lot)}</dd></div>`:''}</dl>${v.notes?`<p class="vax-notes">${esc(v.notes)}</p>`:''}</article>`}
+let editingId=null;const formCard=document.getElementById('vax-form-card');function openForm(){formCard.hidden=false;formCard.scrollIntoView({behavior:'smooth',block:'start'})}document.getElementById('show-vax-form').onclick=()=>{editingId=null;document.getElementById('vax-form').reset();document.getElementById('vax-form-title').textContent='Add vaccination';openForm()};document.getElementById('cancel-vax').onclick=()=>{formCard.hidden=true;editingId=null};
+function editVax(id){const r=readRecords().find(x=>x.id===id);if(!r)return;const v=vaccineData(r);editingId=id;document.getElementById('vax-name').value=v.name;provider.value=v.provider;document.getElementById('vax-date').value=v.date;document.getElementById('vax-due').value=v.due;document.getElementById('vax-lot').value=v.lot;document.getElementById('vax-notes').value=v.notes;document.getElementById('vax-form-title').textContent='Edit vaccination';openForm()}
+document.getElementById('vax-form').onsubmit=e=>{e.preventDefault();const name=document.getElementById('vax-name').value.trim(),date=document.getElementById('vax-date').value,due=document.getElementById('vax-due').value,lot=document.getElementById('vax-lot').value.trim(),notes=document.getElementById('vax-notes').value.trim();let records=readRecords();const obj={id:editingId||Date.now(),pet:petName,type:'vaccination',title:'Vaccination',date,provider:provider.value,notes,createdAt:new Date().toISOString(),fields:[{label:'Vaccine',value:name},...(due?[{label:'Next due date',value:due}]:[]),...(lot?[{label:'Lot / serial number',value:lot}]:[])]};if(editingId){const old=records.find(x=>x.id===editingId);if(old?.createdAt)obj.createdAt=old.createdAt;records=records.map(x=>x.id===editingId?obj:x)}else records.push(obj);writeRecords(records);document.getElementById('vax-save-note').textContent='Saved!';formCard.hidden=true;editingId=null;render();setTimeout(()=>document.getElementById('vax-save-note').textContent='',1600)};
+document.getElementById('history-toggle').onclick=()=>{const el=document.getElementById('history-vax-list'),open=el.hidden;el.hidden=!open;document.getElementById('history-toggle').setAttribute('aria-expanded',String(open));document.getElementById('history-chevron').textContent=open?'⌃':'⌄'};render();
+</script>
+</body></html>
