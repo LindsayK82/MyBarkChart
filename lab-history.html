@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View your pet's lab results and trends in MyBarkChart." />
+  <title>Lab History | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .user-labs-empty{padding:3rem 0 4rem}
+    .user-labs-empty-card{max-width:820px;margin:0 auto;padding:clamp(2rem,5vw,4rem);text-align:center;background:var(--white);border:1px solid rgba(37,79,67,.1);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+    .user-labs-empty-icon{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 1.25rem;border-radius:22px;background:var(--sage-light);font-size:2rem}
+    .user-labs-empty-card h2{margin:.25rem 0 .8rem;color:var(--forest-deep);font-family:"Playfair Display",serif;font-size:clamp(2rem,4vw,2.8rem)}
+    .user-labs-empty-card>p{max-width:610px;margin:0 auto 1.5rem;color:var(--muted);font-size:1.02rem}
+    .user-labs-empty-actions{display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap}
+    .user-labs-how{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:980px;margin:1.5rem auto 0}
+    .user-labs-how article{padding:1.25rem;background:#f8fbf7;border:1px solid rgba(37,79,67,.08);border-radius:var(--radius-md)}
+    .user-labs-how strong{display:block;margin-bottom:.3rem;color:var(--forest-deep)}
+    .user-labs-how p{margin:0;color:var(--muted);font-size:.88rem}
+    @media(max-width:720px){.user-labs-how{grid-template-columns:1fr}}
+  </style>
+</head>
+<body class="demo-page labs-body dashboard-page">
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Patient navigation">
+      <a class="brand" href="index.html" aria-label="MyBarkChart home">
+        <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+      <div class="nav-links demo-nav-links">
+        <a href="dashboard.html">Overview</a>
+        <a href="medicine.html">Medicine Cabinet</a>
+        <a href="conditions.html">Conditions</a>
+        <a href="vaccinations.html">Vaccinations</a>
+        <a href="history.html">Records</a>
+        <a href="lab-history.html" aria-current="page">Labs</a>
+        <a href="profile.html">Profile</a>
+        <a href="notes.html">Notes & Appointments</a>
+      </div>
+      <a class="nav-button" href="index.html">Log out</a>
+    </nav>
+  </header>
+
+  <main class="labs-main">
+    <section class="labs-hero">
+      <div class="container labs-hero-layout">
+        <div>
+          <p class="eyebrow" id="labs-eyebrow">Patient chart · Lab history</p>
+          <h1>See the story behind the numbers.</h1>
+          <p class="labs-lead">As you add laboratory results, MyBarkChart will keep them together so you can compare values across visits and follow changes over time.</p>
+        </div>
+        <div class="labs-pet-card" id="labs-pet-card">
+          <div class="dashboard-photo-placeholder" id="labs-pet-photo" aria-label="Pet photo"><span>🐾</span></div>
+          <div><strong id="labs-pet-name">Your pet</strong><span id="labs-pet-meta">Patient profile</span></div>
+          <span class="status-pill">Your chart</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="container user-labs-empty">
+      <div class="user-labs-empty-card">
+        <span class="user-labs-empty-icon" aria-hidden="true">📈</span>
+        <p class="eyebrow">Lab history</p>
+        <h2>No lab results yet</h2>
+        <p>When you enter lab results from a veterinary record, they'll appear here. As the same values are added over time, this page will become a place to compare results and spot trends.</p>
+        <div class="user-labs-empty-actions">
+          <a class="button button-primary" href="records.html">+ Add lab results</a>
+          <a class="button button-secondary" href="history.html">View health records</a>
+        </div>
+      </div>
+
+      <div class="user-labs-how" aria-label="What will appear here">
+        <article><strong>Results by date</strong><p>Keep values, units, reference ranges, and the date of each test together.</p></article>
+        <article><strong>Changes over time</strong><p>Repeated lab values can build a history that makes increases, decreases, and stability easier to see.</p></article>
+        <article><strong>Useful context</strong><p>Connect the numbers with the visit or record they came from instead of hunting through paperwork.</p></article>
+      </div>
+    </section>
+
+    <section class="demo-cta dashboard-cta">
+      <div class="container demo-cta-card">
+        <div><p class="eyebrow">Patient chart</p><h2>Labs are one part of the health story.</h2><p>Return to the dashboard to see medications, conditions, records, notes, and appointments together.</p></div>
+        <a class="button button-primary" href="dashboard.html">Back to dashboard</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-layout"><div class="footer-brand"><img src="assets/images/Sparky-logo.png" alt="" /><span>MyBarkChart</span></div><p>Your pet's health story, organized.</p></div></footer>
+
+  <script>
+    const stored = localStorage.getItem('myBarkChartProfile');
+    let profile = null;
+    try { profile = stored ? JSON.parse(stored) : null; } catch (error) { console.warn('Could not read prototype profile.', error); }
+
+    function calculateAge(birthday) {
+      if (!birthday) return '';
+      const birth = new Date(`${birthday}T00:00:00`);
+      const today = new Date();
+      if (Number.isNaN(birth.getTime()) || birth > today) return '';
+      let years = today.getFullYear() - birth.getFullYear();
+      let months = today.getMonth() - birth.getMonth();
+      if (today.getDate() < birth.getDate()) months--;
+      if (months < 0) { years--; months += 12; }
+      if (years > 0) return `${years} ${years === 1 ? 'year' : 'years'} old`;
+      return `${Math.max(months, 0)} ${months === 1 ? 'month' : 'months'} old`;
+    }
+
+    if (profile?.pet) {
+      const pet = profile.pet;
+      const name = pet.name || 'Your pet';
+      const age = pet.age || calculateAge(pet.birthday);
+      document.getElementById('labs-pet-name').textContent = name;
+      document.getElementById('labs-eyebrow').textContent = `${name}'s chart · Lab history`;
+      document.getElementById('labs-pet-meta').textContent = [pet.breed, age].filter(Boolean).join(' · ') || 'Patient profile';
+      document.title = `${name}'s Lab History | MyBarkChart`;
+
+      if (pet.photo) {
+        const photo = document.getElementById('labs-pet-photo');
+        photo.innerHTML = `<img src="${pet.photo}" alt="${name}'s profile photo" />`;
+        photo.classList.remove('dashboard-photo-placeholder');
+        photo.classList.add('pet-photo');
+      }
+    }
+  </script>
+</body>
+</html>
