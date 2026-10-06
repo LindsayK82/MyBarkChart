@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore Sparky's read-only sample health record history in MyBarkChart." />
+  <title>Sparky's Sample Records | MyBarkChart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .demo-records-main{padding-bottom:4rem}
+    .demo-records-hero{padding:3.25rem 0 2rem;background:linear-gradient(180deg,#f4f8f2 0%,#fffaf1 100%)}
+    .demo-records-hero-layout{display:flex;justify-content:space-between;gap:2rem;align-items:flex-end}
+    .demo-records-hero h1{margin:.2rem 0 .65rem;color:var(--forest-deep);font-family:"Playfair Display",serif;font-size:clamp(2.5rem,5vw,4.2rem);line-height:1}
+    .demo-records-hero p:last-child{max-width:680px;margin:0;color:var(--muted);font-size:1.05rem}
+    .demo-records-pet{display:flex;align-items:center;gap:.85rem;padding:.8rem 1rem;background:var(--white);border:1px solid rgba(37,79,67,.1);border-radius:var(--radius-md);box-shadow:var(--shadow)}
+    .demo-records-pet img{width:54px;height:54px;object-fit:cover;border-radius:50%}
+    .demo-records-pet strong,.demo-records-pet span{display:block}
+    .demo-records-pet strong{color:var(--forest-deep)}
+    .demo-records-pet span{color:var(--muted);font-size:.82rem}
+    .demo-records-shell{padding-top:2rem}
+    .demo-record-toolbar{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1.25rem}
+    .demo-record-toolbar h2{margin:0;color:var(--forest-deep);font-family:"Playfair Display",serif;font-size:2rem}
+    .record-filter-list{display:flex;flex-wrap:wrap;gap:.55rem}
+    .record-filter{border:1px solid rgba(37,79,67,.14);background:var(--white);color:var(--forest-deep);padding:.55rem .85rem;border-radius:999px;font:inherit;font-size:.85rem;font-weight:800;cursor:pointer}
+    .record-filter:hover,.record-filter:focus-visible,.record-filter.is-active{background:var(--forest);color:var(--white);outline:none}
+    .demo-record-list{display:grid;gap:1rem}
+    .demo-record{background:var(--white);border:1px solid rgba(37,79,67,.1);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+    .demo-record summary{list-style:none;display:grid;grid-template-columns:72px 1fr auto;gap:1.1rem;align-items:center;padding:1.2rem 1.35rem;cursor:pointer}
+    .demo-record summary::-webkit-details-marker{display:none}
+    .demo-record summary:hover{background:#fbfcf9}
+    .demo-record-date{display:grid;place-items:center;min-height:66px;background:var(--sage-light);border-radius:16px;color:var(--forest-deep);line-height:1}
+    .demo-record-date span{font-size:.72rem;font-weight:800;letter-spacing:.08em}
+    .demo-record-date strong{margin-top:.25rem;font-size:1.55rem}
+    .demo-record-heading{min-width:0}
+    .demo-record-heading h3{margin:.3rem 0 .2rem;color:var(--forest-deep);font-size:1.08rem}
+    .demo-record-heading p{margin:0;color:var(--muted);font-size:.9rem}
+    .demo-record-type{display:inline-block;padding:.25rem .55rem;border-radius:999px;background:#f2e4c8;color:var(--forest-deep);font-size:.72rem;font-weight:800}
+    .demo-record-open{color:var(--forest);font-size:.82rem;font-weight:800;white-space:nowrap}
+    .demo-record-open::after{content:" +";font-size:1rem}
+    .demo-record[open] .demo-record-open::after{content:" −"}
+    .demo-record-body{padding:0 1.35rem 1.35rem 104px;border-top:1px solid rgba(37,79,67,.08)}
+    .demo-record-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem 2rem;padding-top:1.15rem}
+    .demo-record-field{margin:0}
+    .demo-record-field dt{color:var(--muted);font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+    .demo-record-field dd{margin:.18rem 0 0;color:var(--ink);font-weight:700}
+    .demo-record-notes{margin:1rem 0 0;padding:1rem;border-radius:var(--radius-md);background:#f8fbf7;color:var(--ink)}
+    .demo-record-notes strong{color:var(--forest-deep)}
+    .demo-record-empty{display:none;padding:2rem;text-align:center;color:var(--muted)}
+    .demo-record-back{margin-top:2rem;padding:1.25rem 1.4rem;display:flex;justify-content:space-between;gap:1rem;align-items:center;background:var(--sage-light);border-radius:var(--radius-lg)}
+    .demo-record-back p{margin:0;color:var(--forest-deep);font-weight:700}
+    @media(max-width:800px){
+      .demo-records-hero-layout,.demo-record-toolbar,.demo-record-back{align-items:flex-start;flex-direction:column}
+      .demo-record summary{grid-template-columns:62px 1fr}
+      .demo-record-open{grid-column:2}
+      .demo-record-body{padding-left:1.35rem}
+    }
+    @media(max-width:560px){
+      .demo-records-hero{padding-top:2rem}
+      .demo-record-grid{grid-template-columns:1fr}
+      .demo-record summary{padding:1rem}
+      .demo-record-body{padding:0 1rem 1rem}
+    }
+  </style>
+</head>
+<body class="demo-page">
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Demo navigation">
+      <a class="brand" href="index.html" aria-label="MyBarkChart home">
+        <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+        <span class="brand-name">MyBarkChart</span>
+      </a>
+      <div class="nav-links demo-nav-links">
+        <a href="demo.html#overview">Overview</a>
+        <a href="demo.html#medications">Medications</a>
+        <a href="demo-records.html" aria-current="page">Records</a>
+        <a href="labs.html">Labs</a>
+        <a href="demo.html#notes">Notes</a>
+      </div>
+      <a class="nav-button demo-exit" href="index.html">Exit demo</a>
+    </nav>
+  </header>
+
+  <main class="demo-records-main">
+    <section class="demo-banner" aria-label="Demo notice">
+      <div class="container demo-banner-inner">
+        <span class="demo-badge">Read-only demo</span>
+        <p>These sample records show how a pet's health history could be organized in MyBarkChart. Nothing here can be changed.</p>
+      </div>
+    </section>
+
+    <section class="demo-records-hero">
+      <div class="container demo-records-hero-layout">
+        <div>
+          <p class="eyebrow">Health history</p>
+          <h1>Sparky's records</h1>
+          <p>Visits, lab results, imaging, and procedures stay together in one chronological history, so the important details are easier to find when you need them.</p>
+        </div>
+        <div class="demo-records-pet">
+          <img src="assets/images/sparky2.jpg" alt="Sparky wearing a colorful sweater and bow" />
+          <div><strong>Sparky</strong><span>Dog · Pit bull mix · Demo patient</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container demo-records-shell" aria-labelledby="history-title">
+      <div class="demo-record-toolbar">
+        <div>
+          <p class="eyebrow">Sample chart</p>
+          <h2 id="history-title">Record history</h2>
+        </div>
+        <div class="record-filter-list" aria-label="Filter sample records">
+          <button class="record-filter is-active" type="button" data-filter="all">All</button>
+          <button class="record-filter" type="button" data-filter="visit">Visits</button>
+          <button class="record-filter" type="button" data-filter="lab">Labs</button>
+          <button class="record-filter" type="button" data-filter="imaging">Imaging</button>
+          <button class="record-filter" type="button" data-filter="procedure">Procedures</button>
+        </div>
+      </div>
+
+      <div class="demo-record-list">
+        <details class="demo-record" data-category="lab">
+          <summary>
+            <time class="demo-record-date" datetime="2026-10-01"><span>OCT</span><strong>01</strong></time>
+            <div class="demo-record-heading"><span class="demo-record-type">Lab</span><h3>Urine protein follow-up</h3><p>Repeat urine testing · Sample Veterinary Clinic</p></div>
+            <span class="demo-record-open">View details</span>
+          </summary>
+          <div class="demo-record-body">
+            <dl class="demo-record-grid">
+              <div class="demo-record-field"><dt>Test</dt><dd>Urine protein:creatinine ratio</dd></div>
+              <div class="demo-record-field"><dt>Result</dt><dd>7.5</dd></div>
+              <div class="demo-record-field"><dt>Provider</dt><dd>Sample Veterinary Clinic</dd></div>
+              <div class="demo-record-field"><dt>Follow-up</dt><dd>Repeat bloodwork and urine testing</dd></div>
+            </dl>
+            <p class="demo-record-notes"><strong>Sample note:</strong> Result added to the chart and the care plan was updated. New medications were started before the next follow-up.</p>
+          </div>
+        </details>
+
+        <details class="demo-record" data-category="imaging">
+          <summary>
+            <time class="demo-record-date" datetime="2026-09-24"><span>SEP</span><strong>24</strong></time>
+            <div class="demo-record-heading"><span class="demo-record-type">Imaging</span><h3>Internal medicine ultrasound</h3><p>Abdominal ultrasound · Specialty internal medicine</p></div>
+            <span class="demo-record-open">View details</span>
+          </summary>
+          <div class="demo-record-body">
+            <dl class="demo-record-grid">
+              <div class="demo-record-field"><dt>Study</dt><dd>Abdominal ultrasound</dd></div>
+              <div class="demo-record-field"><dt>Reason</dt><dd>Follow-up of abnormal laboratory values</dd></div>
+              <div class="demo-record-field"><dt>Finding</dt><dd>Comparable to prior imaging</dd></div>
+              <div class="demo-record-field"><dt>Plan</dt><dd>Continue monitoring and repeat testing</dd></div>
+            </dl>
+            <p class="demo-record-notes"><strong>Sample note:</strong> Specialist recommendations and imaging summary were saved so they can be reviewed alongside later lab results.</p>
+          </div>
+        </details>
+
+        <details class="demo-record" data-category="visit">
+          <summary>
+            <time class="demo-record-date" datetime="2026-09-21"><span>SEP</span><strong>21</strong></time>
+            <div class="demo-record-heading"><span class="demo-record-type">Visit</span><h3>New concern evaluated</h3><p>Office visit · Sample Veterinary Clinic</p></div>
+            <span class="demo-record-open">View details</span>
+          </summary>
+          <div class="demo-record-body">
+            <dl class="demo-record-grid">
+              <div class="demo-record-field"><dt>Weight</dt><dd>77.5 lb</dd></div>
+              <div class="demo-record-field"><dt>Visit type</dt><dd>Problem-focused examination</dd></div>
+              <div class="demo-record-field"><dt>Concern</dt><dd>New skin mass</dd></div>
+              <div class="demo-record-field"><dt>Next step</dt><dd>Diagnostic testing and treatment planning</dd></div>
+            </dl>
+            <p class="demo-record-notes"><strong>Sample note:</strong> Examination notes and the follow-up plan were added to Sparky's health history.</p>
+          </div>
+        </details>
+
+        <details class="demo-record" data-category="lab">
+          <summary>
+            <time class="demo-record-date" datetime="2026-08-28"><span>AUG</span><strong>28</strong></time>
+            <div class="demo-record-heading"><span class="demo-record-type">Lab</span><h3>Routine bloodwork</h3><p>Chemistry panel · Sample Veterinary Clinic</p></div>
+            <span class="demo-record-open">View details</span>
+          </summary>
+          <div class="demo-record-body">
+            <dl class="demo-record-grid">
+              <div class="demo-record-field"><dt>Panel</dt><dd>Blood chemistry</dd></div>
+              <div class="demo-record-field"><dt>Tracked value</dt><dd>ALP elevated</dd></div>
+              <div class="demo-record-field"><dt>Comparison</dt><dd>Higher than previous result</dd></div>
+              <div class="demo-record-field"><dt>Plan</dt><dd>Additional follow-up recommended</dd></div>
+            </dl>
+            <p class="demo-record-notes"><strong>Sample note:</strong> MyBarkChart can keep individual values together over time so changes are easier to spot and discuss with a veterinarian.</p>
+          </div>
+        </details>
+
+        <details class="demo-record" data-category="visit">
+          <summary>
+            <time class="demo-record-date" datetime="2026-07-22"><span>JUL</span><strong>22</strong></time>
+            <div class="demo-record-heading"><span class="demo-record-type">Visit</span><h3>Urinary concern follow-up</h3><p>Office visit + urinalysis · Sample Veterinary Clinic</p></div>
+            <span class="demo-record-open">View details</span>
+          </summary>
+          <div class="demo-record-body">
+            <dl class="demo-record-grid">
+              <div class="demo-record-field"><dt>Reason</dt><dd>Urinary leakage</dd></div>
+              <div class="demo-record-field"><dt>Testing</dt><dd>Urinalysis and urine culture</dd></div>
+              <div class="demo-record-field"><dt>Culture</dt><dd>No bacterial growth</dd></div>
+              <div class="demo-record-field"><dt>Status</dt><dd>Monitoring continued</dd></div>
+            </dl>
+            <p class="demo-record-notes"><strong>Sample note:</strong> Test results and symptoms can live in the same timeline instead of being scattered across paperwork.</p>
+          </div>
+        </details>
+
+        <details class="demo-record" data-category="procedure">
+          <summary>
+            <time class="demo-record-date" datetime="2026-06-10"><span>JUN</span><strong>10</strong></time>
+            <div class="demo-record-heading"><span class="demo-record-type">Procedure</span><h3>Arthritis treatment</h3><p>Scheduled treatment · Sample Veterinary Clinic</p></div>
+            <span class="demo-record-open">View details</span>
+          </summary>
+          <div class="demo-record-body">
+            <dl class="demo-record-grid">
+              <div class="demo-record-field"><dt>Treatment</dt><dd>Librela injection</dd></div>
+              <div class="demo-record-field"><dt>Reason</dt><dd>Arthritis support</dd></div>
+              <div class="demo-record-field"><dt>Administration</dt><dd>Veterinary clinic</dd></div>
+              <div class="demo-record-field"><dt>Status</dt><dd>Completed</dd></div>
+            </dl>
+            <p class="demo-record-notes"><strong>Sample note:</strong> Procedures can be recorded alongside visits and labs to create a fuller picture of care over time.</p>
+          </div>
+        </details>
+
+        <details class="demo-record" data-category="lab">
+          <summary>
+            <time class="demo-record-date" datetime="2026-02-25"><span>FEB</span><strong>25</strong></time>
+            <div class="demo-record-heading"><span class="demo-record-type">Lab</span><h3>Liver enzyme evaluation</h3><p>Blood chemistry · Sample Veterinary Clinic</p></div>
+            <span class="demo-record-open">View details</span>
+          </summary>
+          <div class="demo-record-body">
+            <dl class="demo-record-grid">
+              <div class="demo-record-field"><dt>Tracked value</dt><dd>ALT</dd></div>
+              <div class="demo-record-field"><dt>Result</dt><dd>2316</dd></div>
+              <div class="demo-record-field"><dt>Action</dt><dd>Supportive medications started</dd></div>
+              <div class="demo-record-field"><dt>Follow-up</dt><dd>Ongoing laboratory monitoring</dd></div>
+            </dl>
+            <p class="demo-record-notes"><strong>Sample note:</strong> Older results remain available in the history so later values can be compared against the original change.</p>
+          </div>
+        </details>
+      </div>
+
+      <p class="demo-record-empty" id="record-empty">No sample records are available in this category.</p>
+
+      <div class="demo-record-back">
+        <p>Done exploring Sparky's history?</p>
+        <a class="button button-primary" href="demo.html">Return to demo dashboard</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-layout">
+      <div class="footer-brand"><img src="assets/images/Sparky-logo.png" alt="" /><span>MyBarkChart</span></div>
+      <p>Demo chart · Sample information only</p>
+    </div>
+  </footer>
+
+  <script>
+    const filters = document.querySelectorAll('.record-filter');
+    const records = document.querySelectorAll('.demo-record');
+    const emptyMessage = document.getElementById('record-empty');
+
+    filters.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+        let visible = 0;
+
+        filters.forEach((item) => item.classList.remove('is-active'));
+        button.classList.add('is-active');
+
+        records.forEach((record) => {
+          const show = filter === 'all' || record.dataset.category === filter;
+          record.style.display = show ? '' : 'none';
+          if (show) visible += 1;
+        });
+
+        emptyMessage.style.display = visible ? 'none' : 'block';
+      });
+    });
+  </script>
+</body>
+</html>
