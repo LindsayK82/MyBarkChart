@@ -10,29 +10,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="record-entry-page">
-<header class="site-header">
-  <div class="container">
-    <nav class="top-nav" aria-label="Main navigation">
-     <a class="brand" href="#home" aria-label="MyBarkChart home">
-        <img
-          class="brand-logo"
-          src="assets/images/Sparky-logo.png"
-          alt="Cartoon portrait of Sparky"
-        />
-        <span class="brand-name">MyBarkChart</span>
-      </a>
-     
-      <div class="nav-links">
+<body class="record-entry-page patient-page">
+<header class="site-header patient-header">
+  <nav class="navbar container patient-navbar" aria-label="Patient navigation">
+    <a class="brand" href="dashboard.html" aria-label="MyBarkChart dashboard">
+      <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+      <span class="brand-name">MyBarkChart</span>
+    </a>
+    <div class="nav-links patient-nav-links">
         <a href="dashboard.html">Dashboard</a>
+        <a href="medicine.html">Medicine Cabinet</a>
+        <a href="conditions.html">Conditions</a>
+        <a href="vaccinations.html">Vaccinations</a>
         <a href="history.html">Records</a>
-        <a href="records.html" aria-current="page">Add Record</a>
-        <a href="labs.html">Labs</a>
-      </div>
-      <a class="primary-btn" href="dashboard.html">Back to chart</a>
-    </nav>
+        <a href="lab-history.html">Labs</a>
+        <a href="profile.html">Profile</a>
+        <a href="notes.html">Notes & Appointments</a>
     </div>
-  </header>
+    <a class="nav-button" href="index.html">Log out</a>
+  </nav>
+</header>
 <main class="record-entry-main"><div class="container record-entry-shell">
   <div class="record-entry-heading"><p class="eyebrow">Build the health history</p><h1>Add a record</h1><p class="lead">Choose what you’d like to add. We’ll only show the fields you need.</p><p class="record-pet-note" id="record-pet-note">Adding to your pet’s chart</p></div>
 

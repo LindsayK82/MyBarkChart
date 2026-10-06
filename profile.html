@@ -1,5 +1,23 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Profile & Clinics | MyBarkChart</title><link rel="stylesheet" href="styles.css"></head><body>
-<header class="site-header"><nav class="navbar container" aria-label="Patient navigation"><a class="brand" href="dashboard.html"><img src="assets/images/Sparky-logo.png" alt=""><span>MyBarkChart</span></a><div class="nav-links demo-nav-links"><a href="dashboard.html">Overview</a><a href="medicine.html">Medicine Cabinet</a><a href="conditions.html">Conditions</a><a href="vaccinations.html">Vaccinations</a><a href="history.html">Records</a><a href="labs.html">Labs</a><a href="profile.html" aria-current="page">Profile</a></div><a class="nav-button" href="index.html">Log out</a></nav></header>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Profile & Clinics | MyBarkChart</title><link rel="stylesheet" href="styles.css"></head><body class="patient-page">
+<header class="site-header patient-header">
+  <nav class="navbar container patient-navbar" aria-label="Patient navigation">
+    <a class="brand" href="dashboard.html" aria-label="MyBarkChart dashboard">
+      <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+      <span class="brand-name">MyBarkChart</span>
+    </a>
+    <div class="nav-links patient-nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="medicine.html">Medicine Cabinet</a>
+        <a href="conditions.html">Conditions</a>
+        <a href="vaccinations.html">Vaccinations</a>
+        <a href="history.html">Records</a>
+        <a href="lab-history.html">Labs</a>
+        <a href="profile.html" aria-current="page">Profile</a>
+        <a href="notes.html">Notes & Appointments</a>
+    </div>
+    <a class="nav-button" href="index.html">Log out</a>
+  </nav>
+</header>
 <main class="settings-shell"><div class="container"><section class="settings-hero"><div><p class="eyebrow">Pet settings</p><h1>Profile & care team</h1><p>Keep the everyday details current and make sure every clinic in your pet’s care team is easy to find.</p></div><a class="button button-secondary" href="dashboard.html">← Back to dashboard</a></section>
 <div class="settings-grid"><section class="settings-card"><div class="settings-card-head"><div><h2>Pet profile</h2><p>Update the information that appears across the chart.</p></div></div><form id="pet-form"><div class="profile-photo-editor"><div class="profile-photo-preview" id="photo-preview">🐾</div><div><label class="button button-secondary" for="pet-photo">Change photo</label><input id="pet-photo" type="file" accept="image/*" hidden><p><small>Stored only in this browser during the prototype.</small></p></div></div>
 <div class="settings-form-grid"><div class="settings-field"><label for="pet-name">Pet name</label><input class="settings-input" id="pet-name" required></div><div class="settings-field"><label for="pet-breed">Breed</label><input class="settings-input" id="pet-breed" placeholder="e.g. Pit bull mix"></div><div class="settings-field"><label for="pet-birthday">Birthday</label><input class="settings-input" id="pet-birthday" type="date"></div><div class="settings-field"><label for="pet-weight">Current weight (lb)</label><input class="settings-input" id="pet-weight" type="number" min="0" step="0.1"></div><div class="settings-field"><label for="pet-sex">Sex</label><select class="settings-select" id="pet-sex"><option value="">Not specified</option><option>Female</option><option>Male</option><option>Unknown</option></select></div><div class="settings-field"><label for="pet-status">Spay / neuter status</label><select class="settings-select" id="pet-status"><option value="">Not specified</option><option>Spayed</option><option>Neutered</option><option>Intact</option><option>Unknown</option></select></div><div class="settings-field full"><label for="pet-id">Identification <small>(optional)</small></label><input class="settings-input" id="pet-id" placeholder="Microchip number, tag ID, or other identifier"></div><div class="settings-field full"><label for="pet-notes">Profile notes <small>(optional)</small></label><textarea class="settings-textarea" id="pet-notes" placeholder="Allergies, temperament notes, handling needs, or anything useful at a glance"></textarea></div></div><div class="settings-actions"><button class="button button-primary" type="submit">Save profile</button><span class="save-note" id="profile-save" aria-live="polite"></span></div></form></section>

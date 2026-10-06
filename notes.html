@@ -7,8 +7,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
 </head>
-<body class="demo-page notes-page">
-<header class="site-header"><nav class="navbar container" aria-label="Patient navigation"><a class="brand" href="index.html" aria-label="MyBarkChart home"><img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky"><span class="brand-name">MyBarkChart</span></a><div class="nav-links demo-nav-links"><a href="dashboard.html">Overview</a><a href="medicine.html">Medicine Cabinet</a><a href="conditions.html">Conditions</a><a href="vaccinations.html">Vaccinations</a><a href="history.html">Records</a><a href="labs.html">Labs</a><a href="profile.html">Profile</a><a class="active" href="notes.html">Notes & Appointments</a></div><a class="nav-button" href="index.html">Log out</a></nav></header>
+<body class="demo-page notes-page patient-page">
+<header class="site-header patient-header">
+  <nav class="navbar container patient-navbar" aria-label="Patient navigation">
+    <a class="brand" href="dashboard.html" aria-label="MyBarkChart dashboard">
+      <img class="brand-logo" src="assets/images/Sparky-logo.png" alt="Cartoon portrait of Sparky" />
+      <span class="brand-name">MyBarkChart</span>
+    </a>
+    <div class="nav-links patient-nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="medicine.html">Medicine Cabinet</a>
+        <a href="conditions.html">Conditions</a>
+        <a href="vaccinations.html">Vaccinations</a>
+        <a href="history.html">Records</a>
+        <a href="lab-history.html">Labs</a>
+        <a href="profile.html">Profile</a>
+        <a href="notes.html" aria-current="page">Notes & Appointments</a>
+    </div>
+    <a class="nav-button" href="index.html">Log out</a>
+  </nav>
+</header>
 <main><section class="container notes-shell">
 <div class="notes-hero"><div><p class="eyebrow">Keep the little things handy</p><h1>Notes & Appointments</h1><p class="lead" id="notes-lead">Save upcoming visits and anything you want to remember.</p></div><div class="notes-hero-actions"><button class="button button-primary" id="add-appt" type="button">+ Add appointment</button><button class="button button-secondary" id="add-note" type="button">+ Add note</button></div></div>
 <section class="settings-card notes-form-card" id="appt-form-card" hidden><div class="settings-card-head"><div><p class="eyebrow">Schedule</p><h2 id="appt-form-title">Add appointment</h2></div><button class="mini-button" id="cancel-appt" type="button">Cancel</button></div><form id="appt-form"><div class="settings-form-grid"><label class="settings-field"><span>Date *</span><input class="settings-input" id="appt-date" type="date" required></label><label class="settings-field"><span>Time</span><input class="settings-input" id="appt-time" type="time"></label><label class="settings-field"><span>Clinic or veterinarian</span><select class="settings-select" id="appt-provider"><option value="">Select if known</option></select></label><label class="settings-field"><span>Reason for visit *</span><input class="settings-input" id="appt-reason" required placeholder="e.g., Follow-up bloodwork"></label><label class="settings-field full"><span>Notes</span><textarea class="settings-textarea" id="appt-notes" placeholder="Fasting instructions, questions to ask, things to bring…"></textarea></label></div><div class="settings-actions"><button class="button button-primary" type="submit">Save appointment</button></div></form></section>
