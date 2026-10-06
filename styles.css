@@ -946,7 +946,14 @@ a {
 .demo-login-link { display:inline-flex; justify-content:center; gap:.35rem; color:var(--forest); font-size:.8rem; font-weight:900; text-decoration:none; }
 .demo-login-link:hover { text-decoration:underline; }
 .login-security-note { display:flex; gap:.65rem; margin-top:1.4rem; padding-top:1.2rem; border-top:1px solid rgba(37,79,67,.09); color:var(--muted); font-size:.72rem; line-height:1.5; }
-.login-security-note span { flex:0 0 auto; }
+.login-security-note > span:first-child {
+  flex: 0 0 auto;
+}
+
+.login-security-note > span:last-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 .login-footer { background:var(--forest-deep); color:rgba(255,255,255,.76); }
 .login-footer .footer-brand span { color:white; }
 .login-footer .footer-brand img { width:44px; height:44px; object-fit:contain; }
