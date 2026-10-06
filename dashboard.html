@@ -92,11 +92,9 @@
 
   <footer class="site-footer"><div class="container footer-layout"><div class="footer-brand"><img src="assets/images/Sparky-logo.png" alt="" /><span>MyBarkChart</span></div><p>Your pet's health story, organized.</p></div></footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script>
-    const stored = localStorage.getItem('myBarkChartProfile');
-    let profile = null;
-    try { profile = stored ? JSON.parse(stored) : null; } catch (error) { console.warn('Could not read prototype profile.', error); }
-
     function calculateAge(birthday) {
       if (!birthday) return '';
       const birth = new Date(`${birthday}T00:00:00`);
@@ -110,32 +108,57 @@
       return `${Math.max(months, 0)} ${months === 1 ? 'month' : 'months'} old`;
     }
 
-    if (profile?.pet) {
-      const pet = profile.pet;
-      const age = pet.age || calculateAge(pet.birthday);
+    async function loadPetFromSupabase() {
+      const { data: { user } } = await myBarkChartSupabase.auth.getUser();
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const { data: pet, error } = await myBarkChartSupabase
+        .from('pets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) { console.error('Could not load pet.', error); return; }
+      if (!pet) return;
+
+      const age = pet.approximate_age || calculateAge(pet.date_of_birth);
       document.getElementById('pet-name').textContent = pet.name || 'Your pet';
       const meta = [pet.breed, age].filter(Boolean);
       document.getElementById('pet-meta').textContent = meta.length ? meta.join(' · ') : 'Profile started — add more details anytime.';
       document.title = `${pet.name || 'Patient'}'s Dashboard | MyBarkChart`;
       document.getElementById('welcome-title').textContent = pet.name ? `${pet.name}'s chart is ready.` : 'Your chart is ready.';
 
-      if (pet.photo) {
-        const photo = document.getElementById('dashboard-photo');
-        photo.innerHTML = `<img src="${pet.photo}" alt="${pet.name ? `${pet.name}'s` : 'Pet'} profile photo" />`;
-        photo.classList.remove('dashboard-photo-placeholder');
+      if (pet.photo_url) {
+        const { data: signed, error: photoError } = await myBarkChartSupabase.storage
+          .from('pet-photos')
+          .createSignedUrl(pet.photo_url, 3600);
+        if (!photoError && signed?.signedUrl) {
+          const photo = document.getElementById('dashboard-photo');
+          photo.innerHTML = `<img src="${signed.signedUrl}" alt="${pet.name ? `${pet.name}'s` : 'Pet'} profile photo" />`;
+          photo.classList.remove('dashboard-photo-placeholder');
+        } else if (photoError) {
+          console.error('Could not load pet photo.', photoError);
+        }
       }
 
       const tags = document.getElementById('pet-tags');
-      if (pet.weight) tags.insertAdjacentHTML('beforeend', `<span>${pet.weight} lb</span>`);
-      if (pet.birthday) tags.insertAdjacentHTML('beforeend', `<span>Birthday ${new Date(`${pet.birthday}T00:00:00`).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</span>`);
+      if (pet.current_weight) tags.insertAdjacentHTML('beforeend', `<span>${pet.current_weight} ${pet.weight_unit || 'lb'}</span>`);
+      if (pet.date_of_birth) tags.insertAdjacentHTML('beforeend', `<span>Birthday ${new Date(`${pet.date_of_birth}T00:00:00`).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</span>`);
       if (!tags.children.length) tags.innerHTML = '<span>New profile</span>';
 
-      if (pet.weight) {
-        document.getElementById('weight-stat').textContent = pet.weight;
-        document.getElementById('weight-unit').textContent = 'pounds · from profile setup';
+      if (pet.current_weight) {
+        document.getElementById('weight-stat').textContent = pet.current_weight;
+        document.getElementById('weight-unit').textContent = `${pet.weight_unit === 'kg' ? 'kilograms' : 'pounds'} · from profile setup`;
       }
-      document.getElementById('quick-age').textContent = age || (pet.birthday ? pet.birthday : 'Not added yet');
+      document.getElementById('quick-age').textContent = age || (pet.date_of_birth || 'Not added yet');
     }
+
+    loadPetFromSupabase();
 
     const medications = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartMedications')) || []; } catch { return []; } })();
     const activeMedications = medications.filter(m => m.active !== false);
@@ -151,16 +174,12 @@
     document.getElementById('condition-count').textContent = currentConditions.length;
     document.getElementById('condition-count-note').textContent = currentConditions.length ? `${currentConditions.length} active or monitored →` : 'No conditions added yet →';
 
-    if (profile?.clinics?.length) {
-      const primary = profile.clinics[0];
+    const pendingClinics = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartPendingClinics')) || []; } catch { return []; } })();
+    if (pendingClinics.length) {
+      const primary = pendingClinics[0];
       document.getElementById('primary-clinic').textContent = primary.name || 'Not added yet';
       document.getElementById('primary-vet').textContent = primary.veterinarian || 'Not added yet';
       document.getElementById('clinic-phone').textContent = primary.phone || 'Not added yet';
-      if (profile.clinics.length > 1) {
-        const extra = document.getElementById('additional-clinics');
-        extra.className = 'additional-clinics';
-        extra.innerHTML = `<p>${profile.clinics.length - 1} additional ${profile.clinics.length === 2 ? 'clinic' : 'clinics'} saved</p>`;
-      }
     }
   </script>
 </body>

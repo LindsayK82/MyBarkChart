@@ -192,12 +192,12 @@
             </div>
 
             <div class="record-choice-grid">
-              <a class="record-choice-card record-choice-primary" href="records.html">
+              <a class="record-choice-card record-choice-primary finish-signup" href="records.html" data-destination="records.html">
                 <span class="choice-icon" aria-hidden="true">＋</span>
                 <strong>Yes, Add Records</strong>
                 <small>Start building the health history</small>
               </a>
-              <a class="record-choice-card" href="dashboard.html">
+              <a class="record-choice-card finish-signup" href="dashboard.html" data-destination="dashboard.html">
                 <span class="choice-icon" aria-hidden="true">→</span>
                 <strong>Not Right Now</strong>
                 <small>Go straight to the patient dashboard</small>
@@ -205,7 +205,7 @@
             </div>
 
             <button class="back-link back-step" type="button">← Back to clinic information</button>
-            <p class="prototype-note">For this prototype, these buttons lead to the next planned MyBarkChart pages. Account data is not stored yet.</p>
+            <p class="prototype-note" id="signup-status" role="status" aria-live="polite">Your account and first pet will be saved securely. Clinic records will be connected in the next backend phase.</p>
           </section>
         </form>
       </section>
@@ -249,6 +249,8 @@
     </fieldset>
   </template>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script>
     const steps = [...document.querySelectorAll('.signup-step')];
     const progressSteps = [...document.querySelectorAll('.progress-step')];
@@ -369,6 +371,67 @@
     });
 
     form.addEventListener('submit', (event) => event.preventDefault());
+
+    async function createMyBarkChartAccount(destination) {
+      if (!validateStep(1) || !validateStep(2)) return;
+
+      const status = document.getElementById('signup-status');
+      const finishButtons = [...document.querySelectorAll('.finish-signup')];
+      finishButtons.forEach(button => button.setAttribute('aria-disabled', 'true'));
+      status.textContent = 'Creating your secure MyBarkChart account…';
+
+      const setup = {
+        displayName: document.getElementById('username').value.trim(),
+        pet: {
+          name: document.getElementById('pet-name').value.trim(),
+          birthday: document.getElementById('pet-birthday').value || null,
+          age: document.getElementById('pet-age').value.trim() || null,
+          breed: document.getElementById('pet-breed').value.trim() || null,
+          weight: document.getElementById('pet-weight').value || null
+        },
+        destination
+      };
+
+      // Clinic tables are coming in the next backend phase. Preserve anything entered locally
+      // so it can be migrated instead of asking the user to type it again.
+      const clinics = [...clinicsContainer.querySelectorAll('.clinic-form')].map(clinic => ({
+        name: clinic.querySelector('[name^="clinicName"]')?.value.trim() || '',
+        veterinarian: clinic.querySelector('[name^="vetName"]')?.value.trim() || '',
+        phone: clinic.querySelector('[name^="clinicPhone"]')?.value.trim() || '',
+        address: clinic.querySelector('[name^="clinicAddress"]')?.value.trim() || ''
+      })).filter(clinic => Object.values(clinic).some(Boolean));
+      if (clinics.length) localStorage.setItem('myBarkChartPendingClinics', JSON.stringify(clinics));
+
+      try {
+        const { data, error } = await myBarkChartSupabase.auth.signUp({
+          email: document.getElementById('signup-email').value.trim(),
+          password: document.getElementById('signup-password').value,
+          options: { data: { display_name: setup.displayName } }
+        });
+        if (error) throw error;
+
+        localStorage.setItem('myBarkChartPendingSetup', JSON.stringify(setup));
+
+        if (data.session) {
+          status.textContent = 'Account created. Finishing your profile…';
+          window.location.href = `login.html?finish=1&next=${encodeURIComponent(destination)}`;
+        } else {
+          status.textContent = 'Account created! Check your email and confirm your address. Then return to MyBarkChart and log in to finish creating your pet profile.';
+        }
+      } catch (error) {
+        console.error(error);
+        status.textContent = error.message || 'We could not create your account. Please try again.';
+        finishButtons.forEach(button => button.removeAttribute('aria-disabled'));
+      }
+    }
+
+    document.querySelectorAll('.finish-signup').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (link.getAttribute('aria-disabled') === 'true') return;
+        createMyBarkChartAccount(link.dataset.destination || 'dashboard.html');
+      });
+    });
   </script>
 </body>
 </html>
