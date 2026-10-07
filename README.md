@@ -4,7 +4,7 @@ This is a site designed to hold your animal's medical records, such as lab value
 # Why MyBarkChart exists
 My dog, Sparky, is getting older. Due to her increasingly complicated medical history, I found a need for a site that could consolidate all her info into an easy to use, user-friendly design.
 
-![First Day of School with dog](sparky2.jpg)
+![First Day of School](MyBarkChart/assets/images/sparky2.jpg)
 
 # Purpose
 The site is intended to streamline medical records for your animals. Any pet can be added, and as many as you need. When one pet passes, the information can be archived. Once you have a login, you can access:
