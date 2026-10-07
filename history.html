@@ -58,7 +58,7 @@
 const profile=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartProfile'))||{}}catch{return{}}})();
 const petName=profile.pet?.name||'your pet';
 document.getElementById('history-lead').textContent=`Browse ${petName}’s health history by year or record type.`;
-const records=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords'))||[]}catch{return[]}})();
+const records=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords:'+(localStorage.getItem('myBarkChartActivePetId')||'none')))||[]}catch{return[]}})();
 const meta={visit:{label:'Visit / Exam',icon:'🩺'},lab:{label:'Lab Results',icon:'🧪'},diagnosis:{label:'Diagnosis',icon:'📋'},imaging:{label:'Imaging',icon:'🩻'},procedure:{label:'Procedure / Surgery',icon:'🏥'},vaccination:{label:'Vaccination',icon:'💉'},other:{label:'Other',icon:'🐾'}};
 const escapeHTML=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const dateLabel=value=>{if(!value)return'Date not entered';const d=new Date(`${value}T12:00:00`);return Number.isNaN(d.getTime())?value:d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});};

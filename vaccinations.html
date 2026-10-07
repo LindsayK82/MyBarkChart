@@ -57,7 +57,7 @@
 const profile=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartProfile'))||{}}catch{return{}}})();
 const petName=profile.pet?.name||profile.petName||'Your pet';document.getElementById('vax-lead').textContent=`Keep ${petName}’s vaccine dates and due dates easy to find.`;
 const provider=document.getElementById('vax-provider');(profile.clinics||[]).forEach(c=>{const name=c.name||c.clinicName;if(!name)return;const vets=Array.isArray(c.vets)?c.vets.filter(Boolean):[];const opt=document.createElement('option');opt.value=vets.length?`${name} — ${vets.join(', ')}`:name;opt.textContent=opt.value;provider.appendChild(opt)});
-const readRecords=()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords'))||[]}catch{return[]}};const writeRecords=r=>localStorage.setItem('myBarkChartRecords',JSON.stringify(r));
+const readRecords=()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords:'+(localStorage.getItem('myBarkChartActivePetId')||'none')))||[]}catch{return[]}};const writeRecords=r=>localStorage.setItem('myBarkChartRecords:'+(localStorage.getItem('myBarkChartActivePetId')||'none'),JSON.stringify(r));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=d=>{if(!d)return 'Not recorded';const x=new Date(d+'T12:00:00');return x.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})};
 function vaccineData(r){const f=Object.fromEntries((r.fields||[]).map(x=>[x.label,x.value]));return {name:f.Vaccine||f['Vaccine name']||r.title||'Vaccination',due:f['Next due date']||'',lot:f['Lot / serial number']||'',notes:r.notes||'',date:r.date||'',provider:r.provider||''}}

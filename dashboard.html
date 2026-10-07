@@ -108,11 +108,57 @@
       return `${Math.max(months, 0)} ${months === 1 ? 'month' : 'months'} old`;
     }
 
+    function openSignupPhotoDB() {
+      return new Promise((resolve,reject)=>{const req=indexedDB.open('MyBarkChartSignup',1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('pending'))req.result.createObjectStore('pending')};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});
+    }
+    async function takePendingPetPhoto(){
+      const db=await openSignupPhotoDB();
+      const file=await new Promise((resolve,reject)=>{const tx=db.transaction('pending','readonly');const req=tx.objectStore('pending').get('petPhoto');req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)});
+      if(file) await new Promise((resolve,reject)=>{const tx=db.transaction('pending','readwrite');tx.objectStore('pending').delete('petPhoto');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});
+      db.close(); return file;
+    }
+    async function finishPendingSetup(user) {
+      const rawSetup = localStorage.getItem('myBarkChartPendingSetup');
+      let setup=null; try { setup=rawSetup?JSON.parse(rawSetup):null; } catch {}
+      let pet=null;
+      if(setup?.pet?.name){
+        const {data:existing,error:lookupError}=await myBarkChartSupabase.from('pets').select('*').eq('user_id',user.id).eq('name',setup.pet.name).limit(1).maybeSingle();
+        if(lookupError) throw lookupError;
+        pet=existing;
+        if(!pet){
+          const {data:created,error:petError}=await myBarkChartSupabase.from('pets').insert({user_id:user.id,name:setup.pet.name,breed:setup.pet.breed,date_of_birth:setup.pet.birthday,approximate_birth_date:!setup.pet.birthday&&!!setup.pet.age,approximate_age:setup.pet.age,current_weight:setup.pet.weight?Number(setup.pet.weight):null,weight_unit:'lb'}).select('*').single();
+          if(petError) throw petError; pet=created;
+        }
+        const pendingClinics=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartPendingClinics'))||[]}catch{return[]}})();
+        if(pendingClinics.length){
+          const rows=pendingClinics.map((c,i)=>({pet_id:pet.id,user_id:user.id,name:c.name||'Unnamed clinic',veterinarian:c.veterinarian||null,phone:c.phone||null,address:c.address||null,clinic_type:i===0?'Primary care':'Other',is_primary:i===0}));
+          const {error:clinicError}=await myBarkChartSupabase.from('pet_clinics').insert(rows); if(clinicError) throw clinicError;
+          localStorage.removeItem('myBarkChartPendingClinics');
+        }
+        const photo=await takePendingPetPhoto().catch(()=>null);
+        if(photo){
+          const ext=photo.type==='image/png'?'png':photo.type==='image/webp'?'webp':'jpg'; const path=`${user.id}/${pet.id}/profile.${ext}`;
+          const {error:uploadError}=await myBarkChartSupabase.storage.from('pet-photos').upload(path,photo,{contentType:photo.type,upsert:true});
+          if(!uploadError) await myBarkChartSupabase.from('pets').update({photo_url:path}).eq('id',pet.id).eq('user_id',user.id);
+          else console.error('Could not upload signup photo.',uploadError);
+        }
+        localStorage.removeItem('myBarkChartPendingSetup');
+      }
+      return pet;
+    }
+
     async function loadPetFromSupabase() {
-      const { data: { user } } = await myBarkChartSupabase.auth.getUser();
+      const { data: { session } } = await myBarkChartSupabase.auth.getSession();
+      const user = session?.user;
       if (!user) {
         window.location.href = 'login.html';
         return;
+      }
+
+      try {
+        await finishPendingSetup(user);
+      } catch (setupError) {
+        console.error('Could not finish account setup.', setupError);
       }
 
       const { data: pet, error } = await myBarkChartSupabase
@@ -125,6 +171,10 @@
 
       if (error) { console.error('Could not load pet.', error); return; }
       if (!pet) return;
+      localStorage.setItem('myBarkChartActivePetId', String(pet.id));
+
+      const {data:clinics,error:clinicError}=await myBarkChartSupabase.from('pet_clinics').select('*').eq('user_id',user.id).eq('pet_id',pet.id).order('is_primary',{ascending:false}).order('created_at',{ascending:true});
+      if(!clinicError && clinics?.length){const primary=clinics.find(c=>c.is_primary)||clinics[0];document.getElementById('primary-clinic').textContent=primary.name||'Not added yet';document.getElementById('primary-vet').textContent=primary.veterinarian||'Not added yet';document.getElementById('clinic-phone').textContent=primary.phone||'Not added yet';}
 
       const age = pet.approximate_age || calculateAge(pet.date_of_birth);
       document.getElementById('pet-name').textContent = pet.name || 'Your pet';
@@ -160,7 +210,7 @@
 
     loadPetFromSupabase();
 
-    const medications = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartMedications')) || []; } catch { return []; } })();
+    const medications = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartMedications:'+(localStorage.getItem('myBarkChartActivePetId')||'none'))) || []; } catch { return []; } })();
     const activeMedications = medications.filter(m => m.active !== false);
     document.getElementById('medication-count').textContent = activeMedications.length;
     document.getElementById('medication-count-note').textContent = activeMedications.length ? `${activeMedications.length === 1 ? '1 active medication' : `${activeMedications.length} active medications`} →` : 'No medications added yet →';
@@ -169,18 +219,11 @@
       document.getElementById('dashboard-medications').innerHTML = `<div class="dashboard-med-list">${activeMedications.slice(0,3).map(m => `<a href="medicine.html" class="dashboard-med-row"><span>💊</span><div><strong>${safe(m.name)}</strong><small>${[m.dose,m.frequency].filter(Boolean).map(safe).join(' · ') || 'Details in Medicine Cabinet'}</small></div></a>`).join('')}${activeMedications.length > 3 ? `<a class="text-link" href="medicine.html">+ ${activeMedications.length-3} more in Medicine Cabinet →</a>` : ''}</div>`;
     }
 
-    const conditions = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartConditions')) || []; } catch { return []; } })();
+    const conditions = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartConditions:'+(localStorage.getItem('myBarkChartActivePetId')||'none'))) || []; } catch { return []; } })();
     const currentConditions = conditions.filter(c => (c.status || 'active') !== 'resolved');
     document.getElementById('condition-count').textContent = currentConditions.length;
     document.getElementById('condition-count-note').textContent = currentConditions.length ? `${currentConditions.length} active or monitored →` : 'No conditions added yet →';
 
-    const pendingClinics = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartPendingClinics')) || []; } catch { return []; } })();
-    if (pendingClinics.length) {
-      const primary = pendingClinics[0];
-      document.getElementById('primary-clinic').textContent = primary.name || 'Not added yet';
-      document.getElementById('primary-vet').textContent = primary.veterinarian || 'Not added yet';
-      document.getElementById('clinic-phone').textContent = primary.phone || 'Not added yet';
-    }
   </script>
 </body>
 </html>

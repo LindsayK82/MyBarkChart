@@ -158,10 +158,8 @@
         });
         if (error) throw error;
 
-        const pendingDestination = await finishPendingSetup(data.user);
-        const params = new URLSearchParams(window.location.search);
-        const requestedDestination = params.get('next');
-        window.location.href = pendingDestination || requestedDestination || 'dashboard.html';
+        await finishPendingSetup(data.user);
+        window.location.href = 'dashboard.html';
       } catch (error) {
         console.error(error);
         message.textContent = error.message || 'We could not log you in. Please check your email and password.';

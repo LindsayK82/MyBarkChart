@@ -32,7 +32,7 @@
       <section class="signup-intro" aria-labelledby="signup-page-title">
         <p class="eyebrow">A healthier history starts here</p>
         <h1 id="signup-page-title">Let’s build your pet’s chart.</h1>
-        <p>We’ll start with the basics, add your pet and veterinary clinics, then you can decide whether to enter health records now or come back to them later.</p>
+        <p>We’ll start with the basics, add your pet and veterinary clinics, then verify your email to activate your account.</p>
         <div class="signup-promise">
           <span aria-hidden="true">🐾</span>
           <p><strong>One account, all your pets.</strong><br />You can add more pets from your dashboard after setup.</p>
@@ -47,7 +47,7 @@
           <div class="progress-line"></div>
           <div class="progress-step" data-progress="3"><span>3</span><small>Clinics</small></div>
           <div class="progress-line"></div>
-          <div class="progress-step" data-progress="4"><span>4</span><small>Records</small></div>
+          <div class="progress-step" data-progress="4"><span>4</span><small>Verify</small></div>
         </div>
 
         <form id="signup-form" novalidate>
@@ -179,33 +179,24 @@
 
             <div class="step-actions">
               <button class="button button-secondary back-step" type="button">← Back</button>
-              <button class="button button-primary next-step" type="button">Continue →</button>
+              <button class="button button-primary next-step" type="button">Create Account →</button>
             </div>
           </section>
 
           <section class="signup-step records-choice-step" data-step="4" aria-labelledby="step-4-heading" hidden>
-            <div class="records-choice-icon" aria-hidden="true">📋</div>
+            <div class="records-choice-icon" aria-hidden="true">✉️</div>
             <div class="signup-card-heading records-choice-heading">
               <p class="step-kicker">Step 4 of 4</p>
-              <h2 id="step-4-heading">Would you like to add records?</h2>
-              <p>You can start entering your pet’s health history now, or head to the dashboard and come back whenever you’re ready.</p>
+              <h2 id="step-4-heading">Verify your email</h2>
+              <p>We’ve sent a verification link to <strong id="verification-email">your email address</strong>. Check your inbox and click the link to activate your MyBarkChart account.</p>
             </div>
 
-            <div class="record-choice-grid">
-              <a class="record-choice-card record-choice-primary finish-signup" href="records.html" data-destination="records.html">
-                <span class="choice-icon" aria-hidden="true">＋</span>
-                <strong>Yes, Add Records</strong>
-                <small>Start building the health history</small>
-              </a>
-              <a class="record-choice-card finish-signup" href="dashboard.html" data-destination="dashboard.html">
-                <span class="choice-icon" aria-hidden="true">→</span>
-                <strong>Not Right Now</strong>
-                <small>Go straight to the patient dashboard</small>
-              </a>
+            <div class="verification-message">
+              <strong>One last step!</strong>
+              <p>After you verify your email, return to MyBarkChart and log in. We’ll finish setting up your pet profile and take you to the dashboard.</p>
             </div>
 
-            <button class="back-link back-step" type="button">← Back to clinic information</button>
-            <p class="prototype-note" id="signup-status" role="status" aria-live="polite">Your account and first pet will be saved securely. Clinic records will be connected in the next backend phase.</p>
+            <p class="prototype-note" id="signup-status" role="status" aria-live="polite">Email verification is securely handled by Supabase.</p>
           </section>
         </form>
       </section>
@@ -298,8 +289,13 @@
     }
 
     document.querySelectorAll('.next-step').forEach((button) => {
-      button.addEventListener('click', () => {
-        if (validateStep(currentStep)) showStep(currentStep + 1);
+      button.addEventListener('click', async () => {
+        if (!validateStep(currentStep)) return;
+        if (currentStep === 3) {
+          await createMyBarkChartAccount();
+          return;
+        }
+        showStep(currentStep + 1);
       });
     });
 
@@ -372,13 +368,26 @@
 
     form.addEventListener('submit', (event) => event.preventDefault());
 
-    async function createMyBarkChartAccount(destination) {
+    function openSignupPhotoDB() {
+      return new Promise((resolve,reject)=>{
+        const req=indexedDB.open('MyBarkChartSignup',1);
+        req.onupgradeneeded=()=>{ if(!req.result.objectStoreNames.contains('pending')) req.result.createObjectStore('pending'); };
+        req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error);
+      });
+    }
+    async function savePendingPetPhoto(file) {
+      const db=await openSignupPhotoDB();
+      await new Promise((resolve,reject)=>{ const tx=db.transaction('pending','readwrite'); tx.objectStore('pending').put(file,'petPhoto'); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); });
+      db.close();
+    }
+
+    async function createMyBarkChartAccount() {
       if (!validateStep(1) || !validateStep(2)) return;
 
-      const status = document.getElementById('signup-status');
-      const finishButtons = [...document.querySelectorAll('.finish-signup')];
-      finishButtons.forEach(button => button.setAttribute('aria-disabled', 'true'));
-      status.textContent = 'Creating your secure MyBarkChart account…';
+      const createButton = document.querySelector('.signup-step[data-step="3"] .next-step');
+      const originalButtonText = createButton.textContent;
+      createButton.disabled = true;
+      createButton.textContent = 'Creating account…';
 
       const setup = {
         displayName: document.getElementById('username').value.trim(),
@@ -389,7 +398,7 @@
           breed: document.getElementById('pet-breed').value.trim() || null,
           weight: document.getElementById('pet-weight').value || null
         },
-        destination
+        destination: 'dashboard.html'
       };
 
       // Clinic tables are coming in the next backend phase. Preserve anything entered locally
@@ -403,35 +412,37 @@
       if (clinics.length) localStorage.setItem('myBarkChartPendingClinics', JSON.stringify(clinics));
 
       try {
+        const email = document.getElementById('signup-email').value.trim();
         const { data, error } = await myBarkChartSupabase.auth.signUp({
-          email: document.getElementById('signup-email').value.trim(),
+          email,
           password: document.getElementById('signup-password').value,
-          options: { data: { display_name: setup.displayName } }
+          options: {
+            data: { display_name: setup.displayName },
+            emailRedirectTo: new URL('dashboard.html', window.location.href).href
+          }
         });
         if (error) throw error;
 
         localStorage.setItem('myBarkChartPendingSetup', JSON.stringify(setup));
+        const pendingPhoto = document.getElementById('pet-photo').files[0];
+        if (pendingPhoto) {
+          try { await savePendingPetPhoto(pendingPhoto); } catch (photoErr) { console.error('Could not preserve signup photo.', photoErr); }
+        }
 
         if (data.session) {
-          status.textContent = 'Account created. Finishing your profile…';
-          window.location.href = `login.html?finish=1&next=${encodeURIComponent(destination)}`;
-        } else {
-          status.textContent = 'Account created! Check your email and confirm your address. Then return to MyBarkChart and log in to finish creating your pet profile.';
+          window.location.href = 'dashboard.html';
+          return;
         }
+
+        document.getElementById('verification-email').textContent = email;
+        showStep(4);
       } catch (error) {
         console.error(error);
-        status.textContent = error.message || 'We could not create your account. Please try again.';
-        finishButtons.forEach(button => button.removeAttribute('aria-disabled'));
+        createButton.disabled = false;
+        createButton.textContent = originalButtonText;
+        alert(error.message || 'We could not create your account. Please try again.');
       }
     }
-
-    document.querySelectorAll('.finish-signup').forEach((link) => {
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        if (link.getAttribute('aria-disabled') === 'true') return;
-        createMyBarkChartAccount(link.dataset.destination || 'dashboard.html');
-      });
-    });
   </script>
 </body>
 </html>
