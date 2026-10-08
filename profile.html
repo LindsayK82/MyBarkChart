@@ -22,7 +22,23 @@
 <div class="settings-grid"><section class="settings-card"><div class="settings-card-head"><div><h2>Pet profile</h2><p>Update the information that appears across the chart.</p></div></div><form id="pet-form"><div class="profile-photo-editor"><div class="profile-photo-preview" id="photo-preview">🐾</div><div><label class="button button-secondary" for="pet-photo">Change photo</label><input id="pet-photo" type="file" accept="image/*" hidden><p><small>JPG, PNG, or WebP. Saved securely with your pet profile.</small></p></div></div>
 <div class="settings-form-grid"><div class="settings-field"><label for="pet-name">Pet name</label><input class="settings-input" id="pet-name" required></div><div class="settings-field"><label for="pet-breed">Breed</label><input class="settings-input" id="pet-breed" placeholder="e.g. Pit bull mix"></div><div class="settings-field"><label for="pet-birthday">Birthday</label><input class="settings-input" id="pet-birthday" type="date"></div><div class="settings-field"><label for="pet-weight">Current weight (lb)</label><input class="settings-input" id="pet-weight" type="number" min="0" step="0.1"></div><div class="settings-field"><label for="pet-sex">Sex</label><select class="settings-select" id="pet-sex"><option value="">Not specified</option><option>Female</option><option>Male</option><option>Unknown</option></select></div><div class="settings-field"><label for="pet-status">Spay / neuter status</label><select class="settings-select" id="pet-status"><option value="">Not specified</option><option>Spayed</option><option>Neutered</option><option>Intact</option><option>Unknown</option></select></div><div class="settings-field full"><label for="pet-id">Identification <small>(optional)</small></label><input class="settings-input" id="pet-id" placeholder="Microchip number, tag ID, or other identifier"></div><div class="settings-field full"><label for="pet-notes">Profile notes <small>(optional)</small></label><textarea class="settings-textarea" id="pet-notes" placeholder="Allergies, temperament notes, handling needs, or anything useful at a glance"></textarea></div></div><div class="settings-actions"><button class="button button-primary" type="submit">Save profile</button><span class="save-note" id="profile-save" aria-live="polite"></span></div></form></section>
 <section class="settings-card"><div class="settings-card-head"><div><h2>Veterinary clinics</h2><p>Add regular vets, specialists, emergency hospitals, and previous clinics.</p></div><button class="button button-primary" id="add-clinic" type="button">+ Add clinic</button></div><div class="clinic-list" id="clinic-list"></div><div class="clinic-editor" id="clinic-editor" hidden><h3 id="clinic-editor-title">Add a clinic</h3><form id="clinic-form"><input id="clinic-index" type="hidden"><div class="settings-form-grid"><div class="settings-field full"><label for="clinic-name">Clinic name</label><input class="settings-input" id="clinic-name" required></div><div class="settings-field full"><label for="vet-name">Veterinarian(s) <small>(optional)</small></label><input class="settings-input" id="vet-name" placeholder="e.g. Dr. Smith, Dr. Jones"></div><div class="settings-field"><label for="clinic-phone">Phone <small>(optional)</small></label><input class="settings-input" id="clinic-phone" type="tel"></div><div class="settings-field"><label for="clinic-type">Type</label><select class="settings-select" id="clinic-type"><option>Primary care</option><option>Specialist</option><option>Emergency</option><option>Other</option></select></div><div class="settings-field full"><label for="clinic-address">Address <small>(optional)</small></label><input class="settings-input" id="clinic-address"></div><div class="settings-field full"><label><input id="clinic-primary" type="checkbox"> Make this the primary clinic</label></div></div><div class="settings-actions"><button class="button button-primary" type="submit">Save clinic</button><button class="button button-secondary" id="cancel-clinic" type="button">Cancel</button></div></form></div></section></div></div></main>
-<footer class="site-footer"><div class="container footer-layout"><div class="footer-brand"><img src="assets/images/Sparky-logo.png" alt=""><span>MyBarkChart</span></div><p>Your pet's health story, organized.</p></div></footer>
+<footer class="site-footer">
+  <div class="container footer-layout">
+
+    <a class="footer-brand" href="index.html">
+      <span>🐾</span>
+      <span>MyBarkChart</span>
+    </a>
+
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="aboutus.html">About Us</a>
+      <a href="contactus.html">Contact Us</a>
+    </nav>
+
+    <p>Any pet, any time.</p>
+
+  </div>
+</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>

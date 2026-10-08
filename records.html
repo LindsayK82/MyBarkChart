@@ -60,7 +60,23 @@
     </form>
   </section>
 </div></main>
-<footer class="site-footer"><div class="container footer-row"><p>© 2026 MyBarkChart</p><nav aria-label="Footer navigation"><a href="dashboard.html">Dashboard</a><a href="records.html">Add Record</a><a href="index.html">Home</a></nav></div></footer>
+<footer class="site-footer">
+  <div class="container footer-layout">
+
+    <a class="footer-brand" href="index.html">
+      <span>🐾</span>
+      <span>MyBarkChart</span>
+    </a>
+
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="aboutus.html">About Us</a>
+      <a href="contactus.html">Contact Us</a>
+    </nav>
+
+    <p>Any pet, any time.</p>
+
+  </div>
+</footer>
 <script>
 const profile = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartProfile')) || {}; } catch { return {}; } })();
 const petName = profile.pet?.name || 'your pet';
