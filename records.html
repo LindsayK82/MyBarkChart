@@ -124,9 +124,24 @@ document.getElementById('record-form').addEventListener('submit',async e=>{
     location.href='history.html';
     return;
   }
+  // Vaccinations have one authoritative row: public.pet_vaccinations.
+  // Do not create a parallel pet_records row for new vaccinations.
+  if(currentType==='vaccination' && !editingRecordId){
+   const field=Object.fromEntries(fields.map(f=>[f.label,f.value]));
+   const vaccineName=(field.Vaccine||'').trim();
+   if(!vaccineName)throw new Error('Please enter a vaccine name.');
+   await MBCMedical.save('pet_vaccinations',{
+    vaccine_name:vaccineName,administered_on:date,due_on:field['Next due date']||null,
+    provider:providerSelect.value,notes
+   });
+   resetPicker();document.getElementById('record-form').reset();
+   let note=document.getElementById('mbc-save-message');
+   if(!note){note=document.createElement('p');note.id='mbc-save-message';note.setAttribute('role','status');document.querySelector('.record-picker').prepend(note)}
+   note.textContent='Vaccination saved to your account.';
+   return;
+  }
   const rec=await MBCMedical.save('pet_records',{record_type:currentType,title:title.textContent,recorded_on:date,provider:providerSelect.value,notes,details:{fields}},editingRecordId);
   if(editingRecordId){location.href='history.html';return;}
-  if(currentType==='vaccination'){const field=Object.fromEntries(fields.map(f=>[f.label,f.value]));await MBCMedical.save('pet_vaccinations',{vaccine_name:field.Vaccine||'Vaccination',administered_on:date,due_on:field['Next due date']||null,provider:providerSelect.value,notes});}
   if(currentType==='lab'){
    const {user,pet}=await MBCMedical.context();
    const rows=values.map(v=>({user_id:user.id,pet_id:pet.id,record_id:rec.id,test_name:v.test,result_text:v.result,numeric_value:/^[-+]?(?:\d+\.?\d*|\.\d+)$/.test(v.result.replace(/,/g,''))?Number(v.result.replace(/,/g,'')):null,unit:v.unit,reference_range:v.range,measured_on:date}));

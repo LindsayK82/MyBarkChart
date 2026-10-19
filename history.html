@@ -132,6 +132,16 @@ function render(filter='all'){
 }
 document.querySelectorAll('.history-filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.history-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render(btn.dataset.filter);}));
 render();
-(async()=>{try{const {pet}=await MBCMedical.context();document.getElementById('history-lead').textContent=`Browse ${pet.name}’s health history by year or record type.`;const [rows,labs,vaccines]=await Promise.all([MBCMedical.list('pet_records'),MBCMedical.list('pet_lab_results'),MBCMedical.list('pet_vaccinations')]);records=rows.map(r=>({source:'record',id:r.id,type:r.record_type,title:r.title,date:r.recorded_on,provider:r.provider,notes:r.notes,createdAt:r.created_at,fields:r.details?.fields||[],values:labs.filter(x=>x.record_id===r.id).map(x=>({test:x.test_name,result:x.result_text,unit:x.unit,range:x.reference_range}))}));for(const v of vaccines){if(!records.some(r=>r.type==='vaccination'&&r.id===v.id))records.push({source:'vaccine',id:v.id,type:'vaccination',title:'Vaccination',date:v.administered_on,provider:v.provider,notes:v.notes,fields:[{label:'Vaccine',value:v.vaccine_name},{label:'Next due date',value:v.due_on||''},{label:'Lot / serial number',value:v.lot_number||''}]});}render(document.querySelector('.history-filter.active')?.dataset.filter||'all');}catch(e){MBCMedical.error(e)}})();
+(async()=>{try{const {pet}=await MBCMedical.context();document.getElementById('history-lead').textContent=`Browse ${pet.name}’s health history by year or record type.`;const [rows,labs,vaccines]=await Promise.all([MBCMedical.list('pet_records'),MBCMedical.list('pet_lab_results'),MBCMedical.list('pet_vaccinations')]);records=rows.map(r=>({source:'record',id:r.id,type:r.record_type,title:r.title,date:r.recorded_on,provider:r.provider,notes:r.notes,createdAt:r.created_at,fields:r.details?.fields||[],values:labs.filter(x=>x.record_id===r.id).map(x=>({test:x.test_name,result:x.result_text,unit:x.unit,range:x.reference_range}))}));// Deduplicate only obvious legacy mirror rows for display. Preserve both database rows.
+// A new vaccination is always stored only in pet_vaccinations.
+const normalized=v=>String(v||'').trim().toLocaleLowerCase();
+for(const v of vaccines){
+ const legacy=records.find(r=>r.source==='record'&&r.type==='vaccination'&&
+  normalized(r.fields?.find(f=>f.label==='Vaccine')?.value)===normalized(v.vaccine_name)&&
+  normalized(r.date)===normalized(v.administered_on)&&
+  normalized(r.provider)===normalized(v.provider));
+ if(legacy){records=records.filter(r=>r!==legacy);}
+ records.push({source:'vaccine',id:v.id,type:'vaccination',title:'Vaccination',date:v.administered_on,provider:v.provider,notes:v.notes,fields:[{label:'Vaccine',value:v.vaccine_name},{label:'Next due date',value:v.due_on||''},{label:'Lot / serial number',value:v.lot_number||''}]});
+}render(document.querySelector('.history-filter.active')?.dataset.filter||'all');}catch(e){MBCMedical.error(e)}})();
 </script>
 </body></html>
