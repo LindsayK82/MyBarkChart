@@ -56,7 +56,7 @@
       <div id="dynamic-record-fields"></div>
       <label class="form-field record-notes"><span>Notes <em>optional</em></span><textarea class="form-input" id="record-notes" rows="4" placeholder="Anything else you want to remember about this record"></textarea></label>
       <div class="record-form-actions"><button class="button button-secondary" type="button" id="cancel-record">Cancel</button><button class="button button-primary" type="submit">Save record</button></div>
-      <p class="prototype-note">Prototype note: saved records are stored only in this browser for now. We’ll connect this to the MyBarkChart database later.</p>
+      <p class="prototype-note">Records are securely stored in your MyBarkChart account.</p>
     </form>
   </section>
 </div></main>
@@ -91,6 +91,7 @@ const dynamic = document.getElementById('dynamic-record-fields');
 const title = document.getElementById('form-title');
 const eyebrow = document.getElementById('form-eyebrow');
 let currentType = '';
+let editingLabId = null;
 const simpleForms = {
  visit:{title:'Visit / Exam', fields:[['Visit reason','text','e.g., Annual wellness exam'],['Summary','textarea','Exam findings, recommendations, or follow-up']]},
  vaccination:{title:'Vaccination', fields:[['Vaccine','text','e.g., Rabies'],['Next due date','date','']]},
@@ -104,7 +105,7 @@ function labRow(i){ const p=i===0?['e.g., ALT','e.g., 125','e.g., U/L','e.g., 10
 function simpleFields(config){ return `<div class="simple-record-fields">${config.fields.map(([label,type,placeholder])=>`<label class="form-field"><span>${label}</span>${type==='textarea'?`<textarea class="form-input dynamic-field" data-label="${label}" rows="4" placeholder="${placeholder}"></textarea>`:`<input class="form-input dynamic-field" data-label="${label}" type="${type}" placeholder="${placeholder}">`}</label>`).join('')}</div>`; }
 function openType(type){ currentType=type; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.toggle('selected',b.dataset.recordType===type)); const config=type==='lab'?{title:'Lab Results'}:simpleForms[type]; title.textContent=config.title; eyebrow.textContent='New record'; dynamic.innerHTML=type==='lab'?labRows():simpleFields(config); picker.classList.add('picker-collapsed'); card.hidden=false; card.scrollIntoView({behavior:'smooth',block:'start'}); if(type==='lab') document.getElementById('add-lab-rows').addEventListener('click',()=>{ const rows=document.getElementById('lab-rows'); rows.insertAdjacentHTML('beforeend',Array.from({length:5},(_,i)=>labRow(rows.children.length+i)).join('')); }); }
 document.querySelectorAll('.record-type-card').forEach(btn=>btn.addEventListener('click',()=>openType(btn.dataset.recordType)));
-function resetPicker(){ card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.remove('selected')); picker.scrollIntoView({behavior:'smooth',block:'start'}); }
+function resetPicker(){ editingLabId=null; eyebrow.textContent='New record'; document.querySelector('#record-form button[type=submit]').textContent='Save record'; card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.remove('selected')); picker.scrollIntoView({behavior:'smooth',block:'start'}); }
 document.getElementById('change-record-type').addEventListener('click',resetPicker); document.getElementById('cancel-record').addEventListener('click',resetPicker);
 document.getElementById('record-form').addEventListener('submit',async e=>{
  e.preventDefault(); if(!currentType)return;
@@ -115,6 +116,13 @@ document.getElementById('record-form').addEventListener('submit',async e=>{
  const values=currentType==='lab'?[...document.querySelectorAll('.lab-entry-row')].map(row=>({test:row.querySelector('.lab-test').value.trim(),result:row.querySelector('.lab-result').value.trim(),unit:row.querySelector('.lab-unit').value.trim(),range:row.querySelector('.lab-range').value.trim()})).filter(v=>v.test&&v.result):[];
  if(currentType==='lab'&&!values.length){alert('Enter at least one test name and result.');if(button)button.disabled=false;return;}
  try{
+  if(editingLabId){
+    if(currentType!=='lab') throw new Error('Only lab editing is available here.');
+    const {error}=await myBarkChartSupabase.rpc('mbc_update_lab_record',{p_record_id:editingLabId,p_recorded_on:date,p_provider:providerSelect.value,p_notes:notes,p_values:values});
+    if(error)throw error;
+    location.href='history.html';
+    return;
+  }
   const rec=await MBCMedical.save('pet_records',{record_type:currentType,title:title.textContent,recorded_on:date,provider:providerSelect.value,notes,details:{fields}});
   if(currentType==='vaccination'){const field=Object.fromEntries(fields.map(f=>[f.label,f.value]));await MBCMedical.save('pet_vaccinations',{vaccine_name:field.Vaccine||'Vaccination',administered_on:date,due_on:field['Next due date']||null,provider:providerSelect.value,notes});}
   if(currentType==='lab'){
@@ -128,6 +136,34 @@ document.getElementById('record-form').addEventListener('submit',async e=>{
   note.textContent='Medical record saved to your account.';
  }catch(err){MBCMedical.error(err)}finally{if(button)button.disabled=false}
 });
-(async()=>{try{const {pet}=await MBCMedical.context();document.getElementById('record-pet-note').textContent=`Adding to ${pet.name}’s chart`;await MBCMedical.clinics(providerSelect);}catch(e){MBCMedical.error(e)}})();
+(async()=>{try{
+ const {pet}=await MBCMedical.context();
+ document.getElementById('record-pet-note').textContent=`Adding to ${pet.name}’s chart`;
+ await MBCMedical.clinics(providerSelect);
+ const id=new URLSearchParams(location.search).get('editLab');
+ if(id){
+  if(!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(id))throw new Error('Invalid lab record ID.');
+  const records=await MBCMedical.list('pet_records');
+  const record=records.find(r=>r.id===id&&r.record_type==='lab');
+  if(!record)throw new Error('Lab record not found for this pet.');
+  const values=(await MBCMedical.list('pet_lab_results')).filter(r=>r.record_id===id);
+  if(!values.length)throw new Error('This lab record has no saved measurements to edit.');
+  openType('lab');editingLabId=id;
+  eyebrow.textContent='Edit record';
+  document.querySelector('#record-form button[type=submit]').textContent='Save changes';
+  document.getElementById('record-date').value=record.recorded_on||'';
+  providerSelect.value=record.provider||'';
+  if(record.provider&&!providerSelect.value){const option=new Option(record.provider,record.provider);providerSelect.add(option);providerSelect.value=record.provider;}
+  document.getElementById('record-notes').value=record.notes||'';
+  const holder=document.getElementById('lab-rows');
+  holder.innerHTML=values.map((_,i)=>labRow(i)).join('');
+  [...holder.children].forEach((row,i)=>{
+    row.querySelector('.lab-test').value=values[i].test_name||'';
+    row.querySelector('.lab-result').value=values[i].result_text??values[i].numeric_value??'';
+    row.querySelector('.lab-unit').value=values[i].unit||'';
+    row.querySelector('.lab-range').value=values[i].reference_range||'';
+  });
+ }
+}catch(e){MBCMedical.error(e)}})();
 </script>
 </body></html>

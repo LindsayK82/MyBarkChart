@@ -1499,3 +1499,6 @@ a {
     gap: 1rem;
   }
 }
+
+/* Medical history record actions */
+.history-record-actions{display:flex;gap:.75rem;flex-wrap:wrap;padding:0.8rem 1rem 1.2rem}.history-record-actions .button{font-size:.9rem}
