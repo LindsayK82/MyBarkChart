@@ -136,6 +136,8 @@
     async function finishPendingSetup(user) {
       const rawSetup = localStorage.getItem('myBarkChartPendingSetup');
       let setup=null; try { setup=rawSetup?JSON.parse(rawSetup):null; } catch {}
+      // Email confirmation may be opened on another device; localStorage doesn't follow the user.
+      if (!setup?.pet?.name) setup = user.user_metadata?.initial_setup || null;
       let pet=null;
       if(setup?.pet?.name){
         const {data:existing,error:lookupError}=await myBarkChartSupabase.from('pets').select('*').eq('user_id',user.id).eq('name',setup.pet.name).limit(1).maybeSingle();
@@ -146,9 +148,14 @@
           if(petError) throw petError; pet=created;
         }
         const pendingClinics=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartPendingClinics'))||[]}catch{return[]}})();
-        if(pendingClinics.length){
-          const rows=pendingClinics.map((c,i)=>({pet_id:pet.id,user_id:user.id,name:c.name||'Unnamed clinic',veterinarian:c.veterinarian||null,phone:c.phone||null,address:c.address||null,clinic_type:i===0?'Primary care':'Other',is_primary:i===0}));
+        const clinicsToSave = pendingClinics.length ? pendingClinics : (Array.isArray(setup.clinics) ? setup.clinics : []);
+        if(clinicsToSave.length){
+          const {data:existingClinics,error:existingClinicsError}=await myBarkChartSupabase.from('pet_clinics').select('id').eq('user_id',user.id).eq('pet_id',pet.id).limit(1);
+          if(existingClinicsError) throw existingClinicsError;
+          if(!existingClinics?.length){
+          const rows=clinicsToSave.map((c,i)=>({pet_id:pet.id,user_id:user.id,name:c.name||'Unnamed clinic',veterinarian:c.veterinarian||null,phone:c.phone||null,address:c.address||null,clinic_type:i===0?'Primary care':'Other',is_primary:i===0}));
           const {error:clinicError}=await myBarkChartSupabase.from('pet_clinics').insert(rows); if(clinicError) throw clinicError;
+          }
           localStorage.removeItem('myBarkChartPendingClinics');
         }
         const photo=await takePendingPetPhoto().catch(()=>null);
@@ -159,13 +166,19 @@
           else console.error('Could not upload signup photo.',uploadError);
         }
         localStorage.removeItem('myBarkChartPendingSetup');
+        // Remove temporary signup details from auth metadata once saved to the database.
+        if(user.user_metadata?.initial_setup){
+          const {error:cleanupError}=await myBarkChartSupabase.auth.updateUser({data:{initial_setup:null}});
+          if(cleanupError) console.warn('Could not clear temporary signup metadata.', cleanupError);
+        }
       }
       return pet;
     }
 
     async function loadPetFromSupabase() {
-      const { data: { session } } = await myBarkChartSupabase.auth.getSession();
-      const user = session?.user;
+      // getUser waits for the confirmed auth identity, including a fresh email callback.
+      const { data: { user }, error: authError } = await myBarkChartSupabase.auth.getUser();
+      if(authError) console.warn('Authentication check:', authError.message);
       if (!user) {
         window.location.href = 'login.html';
         return;

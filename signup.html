@@ -425,7 +425,8 @@
           email,
           password: document.getElementById('signup-password').value,
           options: {
-            data: { display_name: setup.displayName },
+            data: { display_name: setup.displayName, initial_setup: { displayName: setup.displayName, pet: setup.pet, clinics } },
+            // Absolute GitHub Pages URL: Supabase must redirect back to this site's dashboard.
             emailRedirectTo: new URL('dashboard.html', window.location.href).href
           }
         });
