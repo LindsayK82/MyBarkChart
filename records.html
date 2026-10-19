@@ -77,18 +77,14 @@
 
   </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="medical-api.js"></script>
 <script>
 const profile = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartProfile')) || {}; } catch { return {}; } })();
 const petName = profile.pet?.name || 'your pet';
 document.getElementById('record-pet-note').textContent = `Adding to ${petName}’s chart`;
 const providerSelect = document.getElementById('record-provider');
-(profile.clinics || []).forEach((clinic, index) => {
-  const label = clinic.veterinarian || clinic.name;
-  if (!label) return;
-  const option = document.createElement('option'); option.value = label; option.textContent = clinic.veterinarian && clinic.name ? `${clinic.veterinarian} — ${clinic.name}` : label; providerSelect.appendChild(option);
-});
-const otherOption = document.createElement('option'); otherOption.value = 'Other / Not listed'; otherOption.textContent = 'Other / Not listed'; providerSelect.appendChild(otherOption);
-
 const picker = document.querySelector('.record-picker');
 const card = document.getElementById('record-form-card');
 const dynamic = document.getElementById('dynamic-record-fields');
@@ -110,6 +106,28 @@ function openType(type){ currentType=type; document.querySelectorAll('.record-ty
 document.querySelectorAll('.record-type-card').forEach(btn=>btn.addEventListener('click',()=>openType(btn.dataset.recordType)));
 function resetPicker(){ card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.remove('selected')); picker.scrollIntoView({behavior:'smooth',block:'start'}); }
 document.getElementById('change-record-type').addEventListener('click',resetPicker); document.getElementById('cancel-record').addEventListener('click',resetPicker);
-document.getElementById('record-form').addEventListener('submit',e=>{ e.preventDefault(); if(!currentType) return; const record={id:Date.now(),pet:petName,type:currentType,title:title.textContent,date:document.getElementById('record-date').value,provider:providerSelect.value,notes:document.getElementById('record-notes').value.trim(),createdAt:new Date().toISOString()}; if(currentType==='lab'){ record.values=[...document.querySelectorAll('.lab-entry-row')].map(row=>({test:row.querySelector('.lab-test').value.trim(),result:row.querySelector('.lab-result').value.trim(),unit:row.querySelector('.lab-unit').value.trim(),range:row.querySelector('.lab-range').value.trim()})).filter(v=>Object.values(v).some(Boolean)); } else { record.fields=[...document.querySelectorAll('.dynamic-field')].map(f=>({label:f.dataset.label,value:f.value.trim()})).filter(f=>f.value); } const records=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords:'+(localStorage.getItem('myBarkChartActivePetId')||'none')))||[]}catch{return[]}})(); records.push(record); localStorage.setItem('myBarkChartRecords:'+(localStorage.getItem('myBarkChartActivePetId')||'none'),JSON.stringify(records)); window.location.href='dashboard.html'; });
+document.getElementById('record-form').addEventListener('submit',async e=>{
+ e.preventDefault(); if(!currentType)return;
+ const button=e.submitter;if(button)button.disabled=true;
+ const date=document.getElementById('record-date').value||null;
+ const notes=document.getElementById('record-notes').value.trim();
+ const fields=currentType==='lab'?[]:[...document.querySelectorAll('.dynamic-field')].map(f=>({label:f.dataset.label,value:f.value.trim()})).filter(f=>f.value);
+ const values=currentType==='lab'?[...document.querySelectorAll('.lab-entry-row')].map(row=>({test:row.querySelector('.lab-test').value.trim(),result:row.querySelector('.lab-result').value.trim(),unit:row.querySelector('.lab-unit').value.trim(),range:row.querySelector('.lab-range').value.trim()})).filter(v=>v.test&&v.result):[];
+ if(currentType==='lab'&&!values.length){alert('Enter at least one test name and result.');if(button)button.disabled=false;return;}
+ try{
+  const rec=await MBCMedical.save('pet_records',{record_type:currentType,title:title.textContent,recorded_on:date,provider:providerSelect.value,notes,details:{fields}});
+  if(currentType==='vaccination'){const field=Object.fromEntries(fields.map(f=>[f.label,f.value]));await MBCMedical.save('pet_vaccinations',{vaccine_name:field.Vaccine||'Vaccination',administered_on:date,due_on:field['Next due date']||null,provider:providerSelect.value,notes});}
+  if(currentType==='lab'){
+   const {user,pet}=await MBCMedical.context();
+   const rows=values.map(v=>({user_id:user.id,pet_id:pet.id,record_id:rec.id,test_name:v.test,result_text:v.result,numeric_value:/^[-+]?(?:\d+\.?\d*|\.\d+)$/.test(v.result.replace(/,/g,''))?Number(v.result.replace(/,/g,'')):null,unit:v.unit,reference_range:v.range,measured_on:date}));
+   const {error}=await myBarkChartSupabase.from('pet_lab_results').insert(rows);
+   if(error)throw error;
+  }
+  resetPicker(); document.getElementById('record-form').reset();
+  let note=document.getElementById('mbc-save-message'); if(!note){note=document.createElement('p');note.id='mbc-save-message';note.setAttribute('role','status');document.querySelector('.record-picker').prepend(note)}
+  note.textContent='Medical record saved to your account.';
+ }catch(err){MBCMedical.error(err)}finally{if(button)button.disabled=false}
+});
+(async()=>{try{const {pet}=await MBCMedical.context();document.getElementById('record-pet-note').textContent=`Adding to ${pet.name}’s chart`;await MBCMedical.clinics(providerSelect);}catch(e){MBCMedical.error(e)}})();
 </script>
 </body></html>

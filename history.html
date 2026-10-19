@@ -70,11 +70,14 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="medical-api.js"></script>
 <script>
 const profile=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartProfile'))||{}}catch{return{}}})();
 const petName=profile.pet?.name||'your pet';
 document.getElementById('history-lead').textContent=`Browse ${petName}’s health history by year or record type.`;
-const records=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords:'+(localStorage.getItem('myBarkChartActivePetId')||'none')))||[]}catch{return[]}})();
+let records=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartRecords:'+(localStorage.getItem('myBarkChartActivePetId')||'none')))||[]}catch{return[]}})();
 const meta={visit:{label:'Visit / Exam',icon:'🩺'},lab:{label:'Lab Results',icon:'🧪'},diagnosis:{label:'Diagnosis',icon:'📋'},imaging:{label:'Imaging',icon:'🩻'},procedure:{label:'Procedure / Surgery',icon:'🏥'},vaccination:{label:'Vaccination',icon:'💉'},other:{label:'Other',icon:'🐾'}};
 const escapeHTML=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const dateLabel=value=>{if(!value)return'Date not entered';const d=new Date(`${value}T12:00:00`);return Number.isNaN(d.getTime())?value:d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});};
@@ -103,5 +106,6 @@ function render(filter='all'){
 ['all','visit','lab','diagnosis','imaging','procedure','vaccination','other'].forEach(type=>{const el=document.getElementById(`count-${type}`);if(el)el.textContent=type==='all'?records.length:records.filter(r=>r.type===type).length;});
 document.querySelectorAll('.history-filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.history-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render(btn.dataset.filter);}));
 render();
+(async()=>{try{const {pet}=await MBCMedical.context();document.getElementById('history-lead').textContent=`Browse ${pet.name}’s health history by year or record type.`;const [rows,labs,vaccines]=await Promise.all([MBCMedical.list('pet_records'),MBCMedical.list('pet_lab_results'),MBCMedical.list('pet_vaccinations')]);records=rows.map(r=>({id:r.id,type:r.record_type,title:r.title,date:r.recorded_on,provider:r.provider,notes:r.notes,createdAt:r.created_at,fields:r.details?.fields||[],values:labs.filter(x=>x.record_id===r.id).map(x=>({test:x.test_name,result:x.result_text,unit:x.unit,range:x.reference_range}))}));for(const v of vaccines){if(!records.some(r=>r.type==='vaccination'&&r.id===v.id))records.push({id:v.id,type:'vaccination',title:'Vaccination',date:v.administered_on,provider:v.provider,notes:v.notes,fields:[{label:'Vaccine',value:v.vaccine_name},{label:'Next due date',value:v.due_on||''},{label:'Lot / serial number',value:v.lot_number||''}]});}render(document.querySelector('.history-filter.active')?.dataset.filter||'all');}catch(e){MBCMedical.error(e)}})();
 </script>
 </body></html>

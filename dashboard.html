@@ -201,6 +201,30 @@
       if (error) { console.error('Could not load pet.', error); return; }
       if (!pet) return;
       localStorage.setItem('myBarkChartActivePetId', String(pet.id));
+      // Always use the authenticated database as the source of truth.
+      try {
+        const [meds,conditions,records,labs]=await Promise.all([
+          myBarkChartSupabase.from('pet_medications').select('*').eq('pet_id',pet.id).eq('user_id',user.id),
+          myBarkChartSupabase.from('pet_conditions').select('*').eq('pet_id',pet.id).eq('user_id',user.id),
+          myBarkChartSupabase.from('pet_records').select('*').eq('pet_id',pet.id).eq('user_id',user.id).order('created_at',{ascending:false}),
+          myBarkChartSupabase.from('pet_lab_results').select('*').eq('pet_id',pet.id).eq('user_id',user.id)
+        ]);
+        for(const r of [meds,conditions,records,labs])if(r.error)throw r.error;
+        const active=meds.data.filter(m=>m.active!==false);
+        document.getElementById('medication-count').textContent=active.length;
+        document.getElementById('medication-count-note').textContent=active.length?`${active.length} active medication(s) →`:'No medications added yet →';
+        const safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        document.getElementById('dashboard-medications').innerHTML=active.length?`<div class="dashboard-med-list">${active.slice(0,3).map(m=>`<a href="medicine.html" class="dashboard-med-row"><span>💊</span><div><strong>${safe(m.name)}</strong><small>${safe([m.dose,m.frequency].filter(Boolean).join(' · '))}</small></div></a>`).join('')}</div>`:'<p>No medications added yet.</p>';
+        const activeConditions=conditions.data.filter(c=>c.status!=='resolved');
+        document.getElementById('condition-count').textContent=activeConditions.length;
+        document.getElementById('condition-count-note').textContent=activeConditions.length?`${activeConditions.length} active or monitored →`:'No conditions added yet →';
+        // Do not show prototype records when the database is empty.
+        localStorage.setItem('myBarkChartRecords:'+pet.id,JSON.stringify(records.data.map(r=>({id:r.id,type:r.record_type,title:r.title,date:r.recorded_on,provider:r.provider,notes:r.notes,fields:r.details?.fields||[],createdAt:r.created_at}))));
+        const recordSection=document.querySelector('#records .dashboard-empty');
+        if(recordSection)recordSection.innerHTML=records.data.length?records.data.slice(0,5).map(r=>`<div><strong>${safe(r.title)}</strong> · ${safe(r.recorded_on||'Date not added')}</div>`).join(''):'No medical records added yet.';
+        const trendCard=document.querySelector('a[href="lab-history.html"].stat-card');if(trendCard){trendCard.querySelector('strong').textContent=labs.data.length;trendCard.querySelector('small').textContent=labs.data.length?'View saved lab measurements →':'No lab values tracked yet →';}
+      }catch(e){console.error('Could not load medical summary:',e);alert('Could not load the saved medical summary: '+e.message);}
+
 
       const {data:clinics,error:clinicError}=await myBarkChartSupabase.from('pet_clinics').select('*').eq('user_id',user.id).eq('pet_id',pet.id).order('is_primary',{ascending:false}).order('created_at',{ascending:true});
       if(!clinicError && clinics?.length){const primary=clinics.find(c=>c.is_primary)||clinics[0];document.getElementById('primary-clinic').textContent=primary.name||'Not added yet';document.getElementById('primary-vet').textContent=primary.veterinarian||'Not added yet';document.getElementById('clinic-phone').textContent=primary.phone||'Not added yet';}
@@ -239,19 +263,6 @@
 
     loadPetFromSupabase();
 
-    const medications = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartMedications:'+(localStorage.getItem('myBarkChartActivePetId')||'none'))) || []; } catch { return []; } })();
-    const activeMedications = medications.filter(m => m.active !== false);
-    document.getElementById('medication-count').textContent = activeMedications.length;
-    document.getElementById('medication-count-note').textContent = activeMedications.length ? `${activeMedications.length === 1 ? '1 active medication' : `${activeMedications.length} active medications`} →` : 'No medications added yet →';
-    if (activeMedications.length) {
-      const safe = value => String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      document.getElementById('dashboard-medications').innerHTML = `<div class="dashboard-med-list">${activeMedications.slice(0,3).map(m => `<a href="medicine.html" class="dashboard-med-row"><span>💊</span><div><strong>${safe(m.name)}</strong><small>${[m.dose,m.frequency].filter(Boolean).map(safe).join(' · ') || 'Details in Medicine Cabinet'}</small></div></a>`).join('')}${activeMedications.length > 3 ? `<a class="text-link" href="medicine.html">+ ${activeMedications.length-3} more in Medicine Cabinet →</a>` : ''}</div>`;
-    }
-
-    const conditions = (() => { try { return JSON.parse(localStorage.getItem('myBarkChartConditions:'+(localStorage.getItem('myBarkChartActivePetId')||'none'))) || []; } catch { return []; } })();
-    const currentConditions = conditions.filter(c => (c.status || 'active') !== 'resolved');
-    document.getElementById('condition-count').textContent = currentConditions.length;
-    document.getElementById('condition-count-note').textContent = currentConditions.length ? `${currentConditions.length} active or monitored →` : 'No conditions added yet →';
 
   </script>
 </body>

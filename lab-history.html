@@ -61,6 +61,7 @@
     </section>
 
     <section class="container user-labs-empty">
+<div id="mbc-lab-history" aria-live="polite"></div>
       <div class="user-labs-empty-card">
         <span class="user-labs-empty-icon" aria-hidden="true">📈</span>
         <p class="eyebrow">Lab history</p>
@@ -105,7 +106,10 @@
   </div>
 </footer>
 
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="medical-api.js"></script>
+<script>
     const stored = localStorage.getItem('myBarkChartProfile');
     let profile = null;
     try { profile = stored ? JSON.parse(stored) : null; } catch (error) { console.warn('Could not read prototype profile.', error); }
@@ -139,6 +143,23 @@
         photo.classList.add('pet-photo');
       }
     }
-  </script>
+  (async()=>{try{
+ const {pet}=await MBCMedical.context();document.getElementById('labs-pet-name').textContent=pet.name;document.getElementById('labs-eyebrow').textContent=`${pet.name}'s chart · Lab history`;document.getElementById('labs-pet-meta').textContent=[pet.breed,pet.approximate_age].filter(Boolean).join(' · ')||'Patient profile';
+ const rows=await MBCMedical.list('pet_lab_results');const holder=document.getElementById('mbc-lab-history');
+ if(!rows.length)return;
+ document.querySelector('.user-labs-empty-card').hidden=true;
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const names=[...new Set(rows.map(r=>r.test_name).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ holder.innerHTML='<h2>Saved lab results</h2><label for="mbc-lab-test">Choose a test</label> <select id="mbc-lab-test" class="lab-select"></select><p id="mbc-lab-summary"></p><svg id="mbc-lab-plot" viewBox="0 0 760 330" role="img" aria-label="Lab result trend chart" style="width:100%;max-width:760px"></svg><div id="mbc-lab-table"></div>';
+ const select=document.getElementById('mbc-lab-test');names.forEach(n=>select.add(new Option(n,n)));
+ function show(){const arr=rows.filter(r=>r.test_name===select.value).sort((a,b)=>(a.measured_on||a.created_at).localeCompare(b.measured_on||b.created_at));const numeric=arr.filter(r=>r.numeric_value!==null&&Number.isFinite(Number(r.numeric_value)));document.getElementById('mbc-lab-summary').textContent=`${arr.length} saved result(s) for ${select.value}. ${numeric.length<2?'Add another numeric result to draw a trend.':'Trend based on recorded numeric values.'}`;
+ document.getElementById('mbc-lab-table').innerHTML='<table style="width:100%"><thead><tr><th>Date</th><th>Result</th><th>Unit</th><th>Reference range</th></tr></thead><tbody>'+arr.map(r=>`<tr><td>${esc(r.measured_on||'Not dated')}</td><td>${esc(r.result_text)}</td><td>${esc(r.unit)}</td><td>${esc(r.reference_range)}</td></tr>`).join('')+'</tbody></table>';
+ const svg=document.getElementById('mbc-lab-plot');svg.replaceChildren();if(numeric.length<2)return;
+ const ns='http://www.w3.org/2000/svg';const make=(tag,attr,text)=>{const el=document.createElementNS(ns,tag);Object.entries(attr).forEach(([k,v])=>el.setAttribute(k,v));if(text!==undefined)el.textContent=text;svg.appendChild(el);return el;};const vals=numeric.map(r=>Number(r.numeric_value));const lo=Math.min(...vals),hi=Math.max(...vals),pad=(hi-lo||1)*.15;const ymin=lo-pad,ymax=hi+pad;const x=i=>65+650*i/(numeric.length-1),y=v=>270-225*(v-ymin)/(ymax-ymin);
+ for(let i=0;i<=4;i++){const val=ymin+(ymax-ymin)*i/4;make('line',{x1:65,y1:y(val),x2:715,y2:y(val),stroke:'currentColor','stroke-opacity':'.16'});make('text',{x:55,y:y(val)+5,'text-anchor':'end',fill:'currentColor','font-size':12},Number(val.toFixed(2)));}
+ make('polyline',{points:vals.map((v,i)=>`${x(i)},${y(v)}`).join(' '),fill:'none',stroke:'#547853','stroke-width':3});vals.forEach((v,i)=>{make('circle',{cx:x(i),cy:y(v),r:5,fill:'#547853'});make('text',{x:x(i),y:300,'text-anchor':'middle',fill:'currentColor','font-size':11},numeric[i].measured_on||'Undated');});
+ }select.onchange=show;show();
+ }catch(e){MBCMedical.error(e)}})();
+</script>
 </body>
 </html>
