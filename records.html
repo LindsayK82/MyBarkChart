@@ -92,6 +92,7 @@ const title = document.getElementById('form-title');
 const eyebrow = document.getElementById('form-eyebrow');
 let currentType = '';
 let editingLabId = null;
+let editingRecordId = null;
 const simpleForms = {
  visit:{title:'Visit / Exam', fields:[['Visit reason','text','e.g., Annual wellness exam'],['Summary','textarea','Exam findings, recommendations, or follow-up']]},
  vaccination:{title:'Vaccination', fields:[['Vaccine','text','e.g., Rabies'],['Next due date','date','']]},
@@ -105,7 +106,7 @@ function labRow(i){ const p=i===0?['e.g., ALT','e.g., 125','e.g., U/L','e.g., 10
 function simpleFields(config){ return `<div class="simple-record-fields">${config.fields.map(([label,type,placeholder])=>`<label class="form-field"><span>${label}</span>${type==='textarea'?`<textarea class="form-input dynamic-field" data-label="${label}" rows="4" placeholder="${placeholder}"></textarea>`:`<input class="form-input dynamic-field" data-label="${label}" type="${type}" placeholder="${placeholder}">`}</label>`).join('')}</div>`; }
 function openType(type){ currentType=type; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.toggle('selected',b.dataset.recordType===type)); const config=type==='lab'?{title:'Lab Results'}:simpleForms[type]; title.textContent=config.title; eyebrow.textContent='New record'; dynamic.innerHTML=type==='lab'?labRows():simpleFields(config); picker.classList.add('picker-collapsed'); card.hidden=false; card.scrollIntoView({behavior:'smooth',block:'start'}); if(type==='lab') document.getElementById('add-lab-rows').addEventListener('click',()=>{ const rows=document.getElementById('lab-rows'); rows.insertAdjacentHTML('beforeend',Array.from({length:5},(_,i)=>labRow(rows.children.length+i)).join('')); }); }
 document.querySelectorAll('.record-type-card').forEach(btn=>btn.addEventListener('click',()=>openType(btn.dataset.recordType)));
-function resetPicker(){ editingLabId=null; eyebrow.textContent='New record'; document.querySelector('#record-form button[type=submit]').textContent='Save record'; card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.remove('selected')); picker.scrollIntoView({behavior:'smooth',block:'start'}); }
+function resetPicker(){ editingRecordId=null; editingLabId=null; eyebrow.textContent='New record'; document.querySelector('#record-form button[type=submit]').textContent='Save record'; card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.remove('selected')); picker.scrollIntoView({behavior:'smooth',block:'start'}); }
 document.getElementById('change-record-type').addEventListener('click',resetPicker); document.getElementById('cancel-record').addEventListener('click',resetPicker);
 document.getElementById('record-form').addEventListener('submit',async e=>{
  e.preventDefault(); if(!currentType)return;
@@ -123,7 +124,8 @@ document.getElementById('record-form').addEventListener('submit',async e=>{
     location.href='history.html';
     return;
   }
-  const rec=await MBCMedical.save('pet_records',{record_type:currentType,title:title.textContent,recorded_on:date,provider:providerSelect.value,notes,details:{fields}});
+  const rec=await MBCMedical.save('pet_records',{record_type:currentType,title:title.textContent,recorded_on:date,provider:providerSelect.value,notes,details:{fields}},editingRecordId);
+  if(editingRecordId){location.href='history.html';return;}
   if(currentType==='vaccination'){const field=Object.fromEntries(fields.map(f=>[f.label,f.value]));await MBCMedical.save('pet_vaccinations',{vaccine_name:field.Vaccine||'Vaccination',administered_on:date,due_on:field['Next due date']||null,provider:providerSelect.value,notes});}
   if(currentType==='lab'){
    const {user,pet}=await MBCMedical.context();
@@ -140,21 +142,30 @@ document.getElementById('record-form').addEventListener('submit',async e=>{
  const {pet}=await MBCMedical.context();
  document.getElementById('record-pet-note').textContent=`Adding to ${pet.name}’s chart`;
  await MBCMedical.clinics(providerSelect);
- const id=new URLSearchParams(location.search).get('editLab');
+ const params=new URLSearchParams(location.search);
+ const id=params.get('editLab')||params.get('editRecord');
  if(id){
   if(!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(id))throw new Error('Invalid lab record ID.');
   const records=await MBCMedical.list('pet_records');
-  const record=records.find(r=>r.id===id&&r.record_type==='lab');
-  if(!record)throw new Error('Lab record not found for this pet.');
-  const values=(await MBCMedical.list('pet_lab_results')).filter(r=>r.record_id===id);
-  if(!values.length)throw new Error('This lab record has no saved measurements to edit.');
-  openType('lab');editingLabId=id;
+  const record=records.find(r=>r.id===id);
+  if(!record)throw new Error('Medical record not found for this pet.');
+  const isLab=record.record_type==='lab';
+  if(params.has('editLab')&&!isLab)throw new Error('This is not a lab record.');
+  if(!isLab&&!simpleForms[record.record_type])throw new Error('Unsupported record type.');
+  const values=isLab?(await MBCMedical.list('pet_lab_results')).filter(r=>r.record_id===id):[];
+  if(isLab&&!values.length)throw new Error('This lab record has no saved measurements to edit.');
+  openType(record.record_type);
+  if(isLab)editingLabId=id;else editingRecordId=id;
   eyebrow.textContent='Edit record';
   document.querySelector('#record-form button[type=submit]').textContent='Save changes';
   document.getElementById('record-date').value=record.recorded_on||'';
   providerSelect.value=record.provider||'';
   if(record.provider&&!providerSelect.value){const option=new Option(record.provider,record.provider);providerSelect.add(option);providerSelect.value=record.provider;}
   document.getElementById('record-notes').value=record.notes||'';
+  if(!isLab){
+    const savedFields=Array.isArray(record.details?.fields)?record.details.fields:[];
+    document.querySelectorAll('.dynamic-field').forEach(el=>{el.value=savedFields.find(f=>f.label===el.dataset.label)?.value||'';});
+  } else {
   const holder=document.getElementById('lab-rows');
   holder.innerHTML=values.map((_,i)=>labRow(i)).join('');
   [...holder.children].forEach((row,i)=>{
@@ -163,6 +174,7 @@ document.getElementById('record-form').addEventListener('submit',async e=>{
     row.querySelector('.lab-unit').value=values[i].unit||'';
     row.querySelector('.lab-range').value=values[i].reference_range||'';
   });
+  }
  }
 }catch(e){MBCMedical.error(e)}})();
 </script>
