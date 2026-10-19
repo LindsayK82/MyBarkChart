@@ -140,13 +140,17 @@ document.getElementById('record-form').addEventListener('submit',async e=>{
    note.textContent='Vaccination saved to your account.';
    return;
   }
-  const rec=await MBCMedical.save('pet_records',{record_type:currentType,title:title.textContent,recorded_on:date,provider:providerSelect.value,notes,details:{fields}},editingRecordId);
-  if(editingRecordId){location.href='history.html';return;}
   if(currentType==='lab'){
-   const {user,pet}=await MBCMedical.context();
-   const rows=values.map(v=>({user_id:user.id,pet_id:pet.id,record_id:rec.id,test_name:v.test,result_text:v.result,numeric_value:/^[-+]?(?:\d+\.?\d*|\.\d+)$/.test(v.result.replace(/,/g,''))?Number(v.result.replace(/,/g,'')):null,unit:v.unit,reference_range:v.range,measured_on:date}));
-   const {error}=await myBarkChartSupabase.from('pet_lab_results').insert(rows);
+   // One database transaction creates the record AND all lab measurements.
+   const {pet}=await MBCMedical.context();
+   const {error}=await myBarkChartSupabase.rpc('mbc_create_lab_record',{
+    p_pet_id:pet.id,p_recorded_on:date,p_provider:providerSelect.value,
+    p_notes:notes,p_values:values
+   });
    if(error)throw error;
+  }else{
+   await MBCMedical.save('pet_records',{record_type:currentType,title:title.textContent,recorded_on:date,provider:providerSelect.value,notes,details:{fields}},editingRecordId);
+   if(editingRecordId){location.href='history.html';return;}
   }
   resetPicker(); document.getElementById('record-form').reset();
   let note=document.getElementById('mbc-save-message'); if(!note){note=document.createElement('p');note.id='mbc-save-message';note.setAttribute('role','status');document.querySelector('.record-picker').prepend(note)}
