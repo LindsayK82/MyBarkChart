@@ -27,7 +27,7 @@
         <a href="profile.html">Profile</a>
         <a href="notes.html">Notes & Appointments</a>
     </div>
-    <a class="nav-button" href="index.html">Log out</a>
+    <button class="nav-button patient-logout" type="button" data-mbc-logout>Log Out</button>
   </nav>
 </header>
 <main class="vaccination-main">
@@ -71,6 +71,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+  <script src="patient-logout.js"></script>
 <script src="medical-api.js"></script>
 <script>
 const profile=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartProfile'))||{}}catch{return{}}})();

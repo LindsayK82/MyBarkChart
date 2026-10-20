@@ -1527,3 +1527,33 @@ a {
   /* The hero already provides the Take a Look link. */
   .home-mobile-login ~ .nav-button { display: none; }
 }
+
+
+/* PATIENT MOBILE LOGOUT — visible even when standard navigation buttons collapse */
+.patient-header .patient-logout {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  min-width: 88px;
+  line-height: 1.2;
+}
+.patient-header .patient-logout:focus-visible {
+  outline: 3px solid var(--forest-deep);
+  outline-offset: 3px;
+}
+.patient-header .patient-logout:disabled { opacity: .7; cursor: wait; }
+@media (max-width: 900px) {
+  .patient-header .patient-logout {
+    display: inline-flex;
+    padding: .65rem .85rem;
+  }
+}
+@media (max-width: 520px) {
+  .patient-header .patient-navbar { grid-template-columns: minmax(0, 1fr) auto; }
+  .patient-header .patient-logout { font-size: .85rem; }
+}

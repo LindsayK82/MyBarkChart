@@ -15,7 +15,7 @@
         <a href="profile.html" aria-current="page">Profile</a>
         <a href="notes.html">Notes & Appointments</a>
     </div>
-    <a class="nav-button" href="index.html">Log out</a>
+    <button class="nav-button patient-logout" type="button" data-mbc-logout>Log Out</button>
   </nav>
 </header>
 <main class="settings-shell"><div class="container"><section class="settings-hero"><div><p class="eyebrow">Pet settings</p><h1>Profile & care team</h1><p>Keep the everyday details current and make sure every clinic in your pet’s care team is easy to find.</p></div><a class="button button-secondary" href="dashboard.html">← Back to dashboard</a></section>
@@ -59,6 +59,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+  <script src="patient-logout.js"></script>
 <script>
 const $=id=>document.getElementById(id); let user=null,pet=null,clinics=[];
 function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}

@@ -24,7 +24,7 @@
         <a href="profile.html">Profile</a>
         <a href="notes.html" aria-current="page">Notes & Appointments</a>
     </div>
-    <a class="nav-button" href="index.html">Log out</a>
+    <button class="nav-button patient-logout" type="button" data-mbc-logout>Log Out</button>
   </nav>
 </header>
 <main><section class="container notes-shell">
@@ -67,4 +67,7 @@ document.getElementById('appt-form').onsubmit=e=>{e.preventDefault();let all=app
 document.getElementById('note-form').onsubmit=e=>{e.preventDefault();let all=notes();const obj={id:editNote||Date.now(),title:document.getElementById('note-title').value.trim(),date:document.getElementById('note-date').value,category:document.getElementById('note-category').value,body:document.getElementById('note-body').value.trim(),createdAt:new Date().toISOString()};all=editNote?all.map(x=>x.id===editNote?obj:x):[...all,obj];write('myBarkChartNotes',all);editNote=null;document.getElementById('note-form-card').hidden=true;renderNotes()};
 document.querySelectorAll('.note-filter').forEach(b=>b.onclick=()=>{currentFilter=b.dataset.filter;document.querySelectorAll('.note-filter').forEach(x=>x.classList.toggle('active',x===b));renderNotes()});document.getElementById('past-toggle').onclick=()=>{const l=document.getElementById('past-list'),open=l.hidden;l.hidden=!open;document.getElementById('past-toggle').setAttribute('aria-expanded',open);document.getElementById('past-chevron').textContent=open?'⌃':'⌄'};
 const action=new URLSearchParams(location.search).get('action');if(action==='appointment')openAppt();if(action==='note')openNote();renderAppointments();renderNotes();
-</script></body></html>
+</script>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="patient-logout.js"></script>
+</body></html>

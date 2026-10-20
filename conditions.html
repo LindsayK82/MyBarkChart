@@ -16,7 +16,7 @@
         <a href="profile.html">Profile</a>
         <a href="notes.html">Notes & Appointments</a>
     </div>
-    <a class="nav-button" href="index.html">Log out</a>
+    <button class="nav-button patient-logout" type="button" data-mbc-logout>Log Out</button>
   </nav>
 </header>
 <main class="conditions-main"><div class="container conditions-shell"><section class="conditions-hero"><div><p class="eyebrow">Health overview</p><h1>Conditions</h1><p class="lead" id="conditions-lead">Keep ongoing health concerns visible while preserving the complete history.</p></div><button class="button button-primary conditions-add" id="open-condition-form" type="button">+ Add condition</button></section>
@@ -42,6 +42,7 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+  <script src="patient-logout.js"></script>
 <script src="medical-api.js"></script>
 <script>
 const profile=(()=>{try{return JSON.parse(localStorage.getItem('myBarkChartProfile'))||{}}catch{return{}}})();const petName=profile.pet?.name||'your pet';document.getElementById('conditions-lead').textContent=`Keep ${petName}’s ongoing health concerns visible while preserving the complete history.`;
