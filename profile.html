@@ -21,7 +21,25 @@
 <main class="settings-shell"><div class="container"><section class="settings-hero"><div><p class="eyebrow">Pet settings</p><h1>Profile & care team</h1><p>Keep the everyday details current and make sure every clinic in your pet’s care team is easy to find.</p></div><a class="button button-secondary" href="dashboard.html">← Back to dashboard</a></section>
 <div class="settings-grid"><section class="settings-card"><div class="settings-card-head"><div><h2>Pet profile</h2><p>Update the information that appears across the chart.</p></div></div><form id="pet-form"><div class="profile-photo-editor"><div class="profile-photo-preview" id="photo-preview">🐾</div><div><label class="button button-secondary" for="pet-photo">Change photo</label><input id="pet-photo" type="file" accept="image/*" hidden><p><small>JPG, PNG, or WebP. Saved securely with your pet profile.</small></p></div></div>
 <div class="settings-form-grid"><div class="settings-field"><label for="pet-name">Pet name</label><input class="settings-input" id="pet-name" required></div><div class="settings-field"><label for="pet-breed">Breed</label><input class="settings-input" id="pet-breed" placeholder="e.g. Pit bull mix"></div><div class="settings-field"><label for="pet-birthday">Birthday</label><input class="settings-input" id="pet-birthday" type="date"></div><div class="settings-field"><label for="pet-weight">Current weight (lb)</label><input class="settings-input" id="pet-weight" type="number" min="0" step="0.1"></div><div class="settings-field"><label for="pet-sex">Sex</label><select class="settings-select" id="pet-sex"><option value="">Not specified</option><option>Female</option><option>Male</option><option>Unknown</option></select></div><div class="settings-field"><label for="pet-status">Spay / neuter status</label><select class="settings-select" id="pet-status"><option value="">Not specified</option><option>Spayed</option><option>Neutered</option><option>Intact</option><option>Unknown</option></select></div><div class="settings-field full"><label for="pet-id">Identification <small>(optional)</small></label><input class="settings-input" id="pet-id" placeholder="Microchip number, tag ID, or other identifier"></div><div class="settings-field full"><label for="pet-notes">Profile notes <small>(optional)</small></label><textarea class="settings-textarea" id="pet-notes" placeholder="Allergies, temperament notes, handling needs, or anything useful at a glance"></textarea></div></div><div class="settings-actions"><button class="button button-primary" type="submit">Save profile</button><span class="save-note" id="profile-save" aria-live="polite"></span></div></form></section>
-<section class="settings-card"><div class="settings-card-head"><div><h2>Veterinary clinics</h2><p>Add regular vets, specialists, emergency hospitals, and previous clinics.</p></div><button class="button button-primary" id="add-clinic" type="button">+ Add clinic</button></div><div class="clinic-list" id="clinic-list"></div><div class="clinic-editor" id="clinic-editor" hidden><h3 id="clinic-editor-title">Add a clinic</h3><form id="clinic-form"><input id="clinic-index" type="hidden"><div class="settings-form-grid"><div class="settings-field full"><label for="clinic-name">Clinic name</label><input class="settings-input" id="clinic-name" required></div><div class="settings-field full"><label for="vet-name">Veterinarian(s) <small>(optional)</small></label><input class="settings-input" id="vet-name" placeholder="e.g. Dr. Smith, Dr. Jones"></div><div class="settings-field"><label for="clinic-phone">Phone <small>(optional)</small></label><input class="settings-input" id="clinic-phone" type="tel"></div><div class="settings-field"><label for="clinic-type">Type</label><select class="settings-select" id="clinic-type"><option>Primary care</option><option>Specialist</option><option>Emergency</option><option>Other</option></select></div><div class="settings-field full"><label for="clinic-address">Address <small>(optional)</small></label><input class="settings-input" id="clinic-address"></div><div class="settings-field full"><label><input id="clinic-primary" type="checkbox"> Make this the primary clinic</label></div></div><div class="settings-actions"><button class="button button-primary" type="submit">Save clinic</button><button class="button button-secondary" id="cancel-clinic" type="button">Cancel</button></div></form></div></section></div></div></main>
+<section class="settings-card"><div class="settings-card-head"><div><h2>Veterinary clinics</h2><p>Add regular vets, specialists, emergency hospitals, and previous clinics.</p></div><button class="button button-primary" id="add-clinic" type="button">+ Add clinic</button></div><div class="clinic-list" id="clinic-list"></div><div class="clinic-editor" id="clinic-editor" hidden><h3 id="clinic-editor-title">Add a clinic</h3><form id="clinic-form"><input id="clinic-index" type="hidden"><div class="settings-form-grid"><div class="settings-field full"><label for="clinic-name">Clinic name</label><input class="settings-input" id="clinic-name" required></div><div class="settings-field full"><label for="vet-name">Veterinarian(s) <small>(optional)</small></label><input class="settings-input" id="vet-name" placeholder="e.g. Dr. Smith, Dr. Jones"></div><div class="settings-field"><label for="clinic-phone">Phone <small>(optional)</small></label><input class="settings-input" id="clinic-phone" type="tel"></div><div class="settings-field"><label for="clinic-type">Type</label><select class="settings-select" id="clinic-type"><option>Primary care</option><option>Specialist</option><option>Emergency</option><option>Other</option></select></div><div class="settings-field full"><label for="clinic-address">Address <small>(optional)</small></label><input class="settings-input" id="clinic-address"></div><div class="settings-field full"><label><input id="clinic-primary" type="checkbox"> Make this the primary clinic</label></div></div><div class="settings-actions"><button class="button button-primary" type="submit">Save clinic</button><button class="button button-secondary" id="cancel-clinic" type="button">Cancel</button></div></form></div></section>
+<section class="settings-card" aria-labelledby="delete-account-heading" style="margin-top:1.5rem;border:1px solid #b46b6b">
+  <div class="settings-card-head"><div><h2 id="delete-account-heading">Delete My Account</h2>
+  <p>Permanent account removal. This deletes all pets, medical records, clinics, and stored pet photos associated with your account. This action cannot be undone.</p></div></div>
+  <button type="button" id="open-account-delete" class="button button-secondary" style="border-color:#b46b6b">Delete My Account</button>
+  <div id="account-delete-panel" hidden style="margin-top:1rem">
+    <p><strong>Are you absolutely sure?</strong> Every pet and medical record in your account will be deleted permanently.</p>
+    <label for="account-delete-email">Enter your account email to confirm</label>
+    <input id="account-delete-email" type="email" class="settings-input" autocomplete="off" style="display:block;margin:.5rem 0 1rem;max-width:28rem">
+    <label for="account-delete-word">Type DELETE to confirm</label>
+    <input id="account-delete-word" type="text" class="settings-input" autocomplete="off" style="display:block;margin:.5rem 0 1rem;max-width:16rem">
+    <div class="settings-actions">
+      <button id="confirm-account-delete" type="button" class="button button-primary" style="background:#a33333">Permanently Delete Account</button>
+      <button id="cancel-account-delete" type="button" class="button button-secondary">Cancel</button>
+    </div>
+    <p id="account-delete-status" role="status" aria-live="polite"></p>
+  </div>
+</section>
+</div></div></main>
 <footer class="site-footer">
   <div class="container footer-layout">
 
@@ -61,6 +79,59 @@ function openEditor(i=''){const editing=i!=='';const c=editing?clinics[i]:{};$('
 $('add-clinic').onclick=()=>openEditor();$('cancel-clinic').onclick=()=>$('clinic-editor').hidden=true;
 $('clinic-form').addEventListener('submit',async e=>{e.preventDefault();const idx=$('clinic-index').value,c={pet_id:pet.id,user_id:user.id,name:$('clinic-name').value.trim(),veterinarian:$('vet-name').value.trim()||null,phone:$('clinic-phone').value.trim()||null,clinic_type:$('clinic-type').value,address:$('clinic-address').value.trim()||null,is_primary:$('clinic-primary').checked||clinics.length===0};if(c.is_primary)await myBarkChartSupabase.from('pet_clinics').update({is_primary:false}).eq('user_id',user.id).eq('pet_id',pet.id);let error;if(idx===''){({error}=await myBarkChartSupabase.from('pet_clinics').insert(c))}else{({error}=await myBarkChartSupabase.from('pet_clinics').update(c).eq('id',clinics[Number(idx)].id).eq('user_id',user.id))}if(error){console.error(error);alert(error.message||'Could not save clinic.');return}$('clinic-editor').hidden=true;await loadClinics()});
 $('clinic-list').addEventListener('click',async e=>{const edit=e.target.dataset.edit,primary=e.target.dataset.primary,remove=e.target.dataset.remove;if(edit!==undefined)return openEditor(Number(edit));if(primary!==undefined){await myBarkChartSupabase.from('pet_clinics').update({is_primary:false}).eq('user_id',user.id).eq('pet_id',pet.id);await myBarkChartSupabase.from('pet_clinics').update({is_primary:true}).eq('id',clinics[Number(primary)].id).eq('user_id',user.id);await loadClinics()}if(remove!==undefined&&confirm('Remove this clinic from the care team?')){await myBarkChartSupabase.from('pet_clinics').delete().eq('id',clinics[Number(remove)].id).eq('user_id',user.id);await loadClinics()}});
+
+// Account deletion — calls a server-side Supabase Edge Function.
+// Never expose a service-role / secret key in browser JavaScript.
+const deletionPanel = $('account-delete-panel');
+$('open-account-delete').addEventListener('click', () => {
+  deletionPanel.hidden = false;
+  $('account-delete-email').value = '';
+  $('account-delete-word').value = '';
+  $('account-delete-status').textContent = '';
+  $('account-delete-email').focus();
+});
+$('cancel-account-delete').addEventListener('click', () => {
+  deletionPanel.hidden = true;
+});
+$('confirm-account-delete').addEventListener('click', async () => {
+  const status = $('account-delete-status');
+  const button = $('confirm-account-delete');
+  status.textContent = '';
+  const { data: { user: currentUser }, error: authenticationError } =
+    await myBarkChartSupabase.auth.getUser();
+  if (authenticationError || !currentUser?.email) {
+    status.textContent = 'Please sign in again before deleting your account.';
+    return;
+  }
+  if ($('account-delete-email').value.trim().toLowerCase() !== currentUser.email.toLowerCase() ||
+      $('account-delete-word').value.trim() !== 'DELETE') {
+    status.textContent = 'Your email and the word DELETE must match exactly.';
+    return;
+  }
+  if (!window.confirm('FINAL CONFIRMATION: Permanently delete this account, all pets, all records, and all pet photos?')) return;
+  button.disabled = true;
+  button.textContent = 'Deleting account…';
+  try {
+    const { error } = await myBarkChartSupabase.functions.invoke('delete-my-account', {
+      body: { confirmation: 'DELETE' }
+    });
+    if (error) throw error;
+    // Clear only MyBarkChart temporary browser state; sign-out clears the Supabase session.
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('myBarkChart')) localStorage.removeItem(key);
+    }
+    await myBarkChartSupabase.auth.signOut({ scope: 'local' });
+    sessionStorage.setItem('mbc_account_deleted', '1');
+    window.location.replace('index.html?accountDeleted=1');
+  } catch (err) {
+    console.error('Account deletion error', err);
+    status.textContent = 'Account deletion could not be confirmed. Please contact MyBarkChart support before trying again. ' +
+      (err?.message || '');
+    button.disabled = false;
+    button.textContent = 'Permanently Delete Account';
+  }
+});
+
 requireProfile();
 </script>
 </body></html>
