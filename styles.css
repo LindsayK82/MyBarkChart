@@ -1502,3 +1502,28 @@ a {
 
 /* Medical history record actions */
 .history-record-actions{display:flex;gap:.75rem;flex-wrap:wrap;padding:0.8rem 1rem 1.2rem}.history-record-actions .button{font-size:.9rem}
+
+/* Homepage mobile login — keep account access visible when navigation collapses */
+.home-mobile-login { display: none; }
+@media (max-width: 900px) {
+  .home-mobile-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    min-height: 44px;
+    padding: .65rem 1rem;
+    border-radius: 999px;
+    background: var(--forest);
+    color: var(--white);
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .home-mobile-login:hover, .home-mobile-login:focus-visible {
+    background: var(--forest-deep);
+    color: var(--white);
+  }
+  /* The hero already provides the Take a Look link. */
+  .home-mobile-login ~ .nav-button { display: none; }
+}
