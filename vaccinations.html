@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="demo-page vaccination-page patient-page">
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="site-header patient-header">
   <nav class="navbar container patient-navbar" aria-label="Patient navigation">
     <a class="brand" href="dashboard.html" aria-label="MyBarkChart dashboard">
@@ -30,7 +31,7 @@
     <button class="nav-button patient-logout" type="button" data-mbc-logout>Log Out</button>
   </nav>
 </header>
-<main class="vaccination-main">
+<main class="vaccination-main" id="main-content" tabindex="-1">
   <section class="container vaccination-shell">
     <div class="vaccination-hero"><div><p class="eyebrow">Preventive care</p><h1>Vaccinations</h1><p class="lead" id="vax-lead">Keep vaccine dates and due dates easy to find.</p></div><button class="button button-primary" id="show-vax-form" type="button">+ Add vaccination</button></div>
     <div class="vax-summary" aria-label="Vaccination summary"><div><strong id="current-count">0</strong><span>Current</span></div><div><strong id="soon-count">0</strong><span>Due soon</span></div><div><strong id="overdue-count">0</strong><span>Overdue</span></div></div>
