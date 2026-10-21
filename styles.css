@@ -1557,3 +1557,9 @@ a {
   .patient-header .patient-navbar { grid-template-columns: minmax(0, 1fr) auto; }
   .patient-header .patient-logout { font-size: .85rem; }
 }
+
+/* Accessibility — keyboard navigation and motion preferences */
+.skip-link{position:fixed;top:8px;left:8px;z-index:9999;padding:.8rem 1rem;border-radius:12px;background:var(--forest-deep);color:#fff;font-weight:800;transform:translateY(-160%)}
+.skip-link:focus,.skip-link:focus-visible{transform:translateY(0)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex="-1"]:focus{outline:3px solid #a45e07;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
