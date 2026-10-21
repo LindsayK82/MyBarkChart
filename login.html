@@ -61,7 +61,7 @@
           </div>
 
           <div class="form-helper-row">
-            <a class="login-link prototype-link" href="#">Forgot password?</a>
+            <a class="login-link" href="forgot-password.html">Forgot password?</a>
           </div>
 
           <button class="button button-primary login-submit" type="submit">Log In</button>
@@ -174,13 +174,6 @@
       }
     });
 
-    document.querySelectorAll('.prototype-link').forEach((link) => {
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        message.textContent = 'Password reset is not connected yet. We’ll add that after the core account flow is verified.';
-        message.classList.add('show');
-      });
-    });
   </script>
 </body>
 </html>
