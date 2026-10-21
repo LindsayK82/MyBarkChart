@@ -41,7 +41,7 @@
             <p class="eyebrow">Patient chart</p>
             <h1 id="pet-name">Your pet</h1>
             <p class="pet-meta" id="pet-meta">Profile details will appear here.</p>
-            <div class="pet-tags" id="pet-tags"></div>
+            <div class="pet-tags" id="pet-tags"></div><div class="mbc-pet-switch"><label for="active-pet-select">Viewing pet</label><select id="active-pet-select" aria-label="Choose pet chart"></select></div>
           </div>
         </div>
         <div class="demo-note dashboard-welcome">
@@ -87,7 +87,7 @@
     </div>
 
     <section class="demo-cta dashboard-cta">
-      <div class="container demo-cta-card"><div><p class="eyebrow">Your household</p><h2>Have another pet?</h2><p>MyBarkChart is designed to keep multiple pet profiles under one account.</p></div><button class="button button-primary" type="button">+ Add Another Pet</button></div>
+      <div class="container demo-cta-card"><div><p class="eyebrow">Your household</p><h2>Have another pet?</h2><p>MyBarkChart is designed to keep multiple pet profiles under one account.</p></div><a class="button button-primary" href="add-pet.html">+ Add Another Pet</a></div>
     </section>
   </main>
 
@@ -192,17 +192,23 @@
         console.error('Could not finish account setup.', setupError);
       }
 
-      const { data: pet, error } = await myBarkChartSupabase
-        .from('pets')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .maybeSingle();
-
-      if (error) { console.error('Could not load pet.', error); return; }
-      if (!pet) return;
+      const { data: ownedPets, error } = await myBarkChartSupabase
+        .from('pets').select('*').eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+      if (error) { console.error('Could not load pets.', error); return; }
+      if (!ownedPets?.length) { window.location.href = 'add-pet.html'; return; }
+      const activeId = localStorage.getItem('myBarkChartActivePetId');
+      const pet = ownedPets.find(p => p.id === activeId) || ownedPets[0];
       localStorage.setItem('myBarkChartActivePetId', String(pet.id));
+      const select = document.getElementById('active-pet-select');
+      select.replaceChildren(...ownedPets.map(p => new Option(p.name || 'Unnamed pet', p.id)));
+      select.value = pet.id;
+      select.addEventListener('change', () => {
+        const chosen = ownedPets.find(p => p.id === select.value);
+        if (!chosen) return;
+        localStorage.setItem('myBarkChartActivePetId', chosen.id);
+        window.location.reload();
+      });
       // Always use the authenticated database as the source of truth.
       try {
         const [meds,conditions,records,labs]=await Promise.all([
@@ -252,6 +258,7 @@
       }
 
       const tags = document.getElementById('pet-tags');
+      tags.replaceChildren();
       if (pet.current_weight) tags.insertAdjacentHTML('beforeend', `<span>${pet.current_weight} ${pet.weight_unit || 'lb'}</span>`);
       if (pet.date_of_birth) tags.insertAdjacentHTML('beforeend', `<span>Birthday ${new Date(`${pet.date_of_birth}T00:00:00`).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</span>`);
       if (!tags.children.length) tags.innerHTML = '<span>New profile</span>';
