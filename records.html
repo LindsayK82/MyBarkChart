@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="record-entry-page patient-page">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="site-header patient-header">
   <nav class="navbar container patient-navbar" aria-label="Patient navigation">
     <a class="brand" href="dashboard.html" aria-label="MyBarkChart dashboard">
@@ -30,24 +31,24 @@
     <button class="nav-button patient-logout" type="button" data-mbc-logout>Log Out</button>
   </nav>
 </header>
-<main class="record-entry-main"><div class="container record-entry-shell">
+<main id="main-content" class="record-entry-main"><div class="container record-entry-shell">
   <div class="record-entry-heading"><p class="eyebrow">Build the health history</p><h1>Add a record</h1><p class="lead">Choose what you’d like to add. We’ll only show the fields you need.</p><p class="record-pet-note" id="record-pet-note">Adding to your pet’s chart</p></div>
 
   <section class="record-picker" aria-labelledby="record-picker-title">
     <h2 id="record-picker-title">What would you like to add?</h2>
     <div class="record-type-grid">
-      <button class="record-type-card" type="button" data-record-type="lab"><span>🧪</span><strong>Lab Results</strong><small>Bloodwork, urinalysis, and other measured values</small></button>
-      <button class="record-type-card" type="button" data-record-type="visit"><span>🩺</span><strong>Visit / Exam</strong><small>Wellness visits, sick visits, and exam notes</small></button>
-      <button class="record-type-card" type="button" data-record-type="vaccination"><span>💉</span><strong>Vaccination</strong><small>Vaccines, boosters, and due dates</small></button>
-      <button class="record-type-card" type="button" data-record-type="procedure"><span>🏥</span><strong>Procedure / Surgery</strong><small>Operations, dental work, and treatments</small></button>
-      <button class="record-type-card" type="button" data-record-type="imaging"><span>🩻</span><strong>Imaging</strong><small>X-rays, ultrasound, CT, and MRI</small></button>
-      <button class="record-type-card" type="button" data-record-type="diagnosis"><span>📋</span><strong>Diagnosis</strong><small>Conditions and diagnoses to keep on the chart</small></button>
-      <button class="record-type-card" type="button" data-record-type="other"><span>🐾</span><strong>Other</strong><small>Anything that doesn’t fit another category</small></button>
+      <button class="record-type-card" type="button" aria-pressed="false" data-record-type="lab"><span>🧪</span><strong>Lab Results</strong><small>Bloodwork, urinalysis, and other measured values</small></button>
+      <button class="record-type-card" type="button" aria-pressed="false" data-record-type="visit"><span>🩺</span><strong>Visit / Exam</strong><small>Wellness visits, sick visits, and exam notes</small></button>
+      <button class="record-type-card" type="button" aria-pressed="false" data-record-type="vaccination"><span>💉</span><strong>Vaccination</strong><small>Vaccines, boosters, and due dates</small></button>
+      <button class="record-type-card" type="button" aria-pressed="false" data-record-type="procedure"><span>🏥</span><strong>Procedure / Surgery</strong><small>Operations, dental work, and treatments</small></button>
+      <button class="record-type-card" type="button" aria-pressed="false" data-record-type="imaging"><span>🩻</span><strong>Imaging</strong><small>X-rays, ultrasound, CT, and MRI</small></button>
+      <button class="record-type-card" type="button" aria-pressed="false" data-record-type="diagnosis"><span>📋</span><strong>Diagnosis</strong><small>Conditions and diagnoses to keep on the chart</small></button>
+      <button class="record-type-card" type="button" aria-pressed="false" data-record-type="other"><span>🐾</span><strong>Other</strong><small>Anything that doesn’t fit another category</small></button>
     </div>
   </section>
 
   <section class="record-form-card" id="record-form-card" hidden aria-live="polite">
-    <div class="record-form-heading"><div><p class="eyebrow" id="form-eyebrow">New record</p><h2 id="form-title">Record details</h2></div><button class="change-record-type" type="button" id="change-record-type">Change type</button></div>
+    <div class="record-form-heading"><div><p class="eyebrow" id="form-eyebrow">New record</p><h2 id="form-title" tabindex="-1">Record details</h2></div><button class="change-record-type" type="button" id="change-record-type">Change type</button></div>
     <form id="record-form">
       <div class="form-grid-two common-record-fields">
         <label class="form-field"><span>Date <b>*</b></span><input class="form-input" type="date" id="record-date" required /></label>
@@ -105,9 +106,9 @@ const simpleForms = {
 function labRows(count=5){ return `<div class="lab-entry-intro"><h3>Enter the values from the report</h3><p>Copy each test exactly as it appears. The first row shows an example of what to look for; the gray text disappears when you type.</p></div><div class="lab-entry-table"><div class="lab-entry-labels" aria-hidden="true"><span>Test</span><span>Result</span><span>Unit</span><span>Reference range</span></div><div id="lab-rows">${Array.from({length:count},(_,i)=>labRow(i)).join('')}</div></div><button class="add-lab-rows" type="button" id="add-lab-rows">+ Add 5 more rows</button>`; }
 function labRow(i){ const p=i===0?['e.g., ALT','e.g., 125','e.g., U/L','e.g., 10–125']:['Test name','Result','Unit','Reference range']; return `<div class="lab-entry-row"><label><span>Test</span><input class="form-input lab-test" placeholder="${p[0]}"></label><label><span>Result</span><input class="form-input lab-result" placeholder="${p[1]}"></label><label><span>Unit</span><input class="form-input lab-unit" placeholder="${p[2]}"></label><label><span>Reference range</span><input class="form-input lab-range" placeholder="${p[3]}"></label></div>`; }
 function simpleFields(config){ return `<div class="simple-record-fields">${config.fields.map(([label,type,placeholder])=>`<label class="form-field"><span>${label}</span>${type==='textarea'?`<textarea class="form-input dynamic-field" data-label="${label}" rows="4" placeholder="${placeholder}"></textarea>`:`<input class="form-input dynamic-field" data-label="${label}" type="${type}" placeholder="${placeholder}">`}</label>`).join('')}</div>`; }
-function openType(type){ currentType=type; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.toggle('selected',b.dataset.recordType===type)); const config=type==='lab'?{title:'Lab Results'}:simpleForms[type]; title.textContent=config.title; eyebrow.textContent='New record'; dynamic.innerHTML=type==='lab'?labRows():simpleFields(config); picker.classList.add('picker-collapsed'); card.hidden=false; card.scrollIntoView({behavior:'smooth',block:'start'}); if(type==='lab') document.getElementById('add-lab-rows').addEventListener('click',()=>{ const rows=document.getElementById('lab-rows'); rows.insertAdjacentHTML('beforeend',Array.from({length:5},(_,i)=>labRow(rows.children.length+i)).join('')); }); }
+function openType(type){ currentType=type; document.querySelectorAll('.record-type-card').forEach(b=>{ const selected=b.dataset.recordType===type; b.classList.toggle('selected',selected); b.setAttribute('aria-pressed',String(selected)); }); const config=type==='lab'?{title:'Lab Results'}:simpleForms[type]; title.textContent=config.title; eyebrow.textContent='New record'; dynamic.innerHTML=type==='lab'?labRows():simpleFields(config); picker.classList.add('picker-collapsed'); card.hidden=false; card.scrollIntoView({behavior:'smooth',block:'start'}); title.focus({preventScroll:true}); if(type==='lab') document.getElementById('add-lab-rows').addEventListener('click',()=>{ const rows=document.getElementById('lab-rows'); rows.insertAdjacentHTML('beforeend',Array.from({length:5},(_,i)=>labRow(rows.children.length+i)).join('')); }); }
 document.querySelectorAll('.record-type-card').forEach(btn=>btn.addEventListener('click',()=>openType(btn.dataset.recordType)));
-function resetPicker(){ editingRecordId=null; editingLabId=null; eyebrow.textContent='New record'; document.querySelector('#record-form button[type=submit]').textContent='Save record'; card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>b.classList.remove('selected')); picker.scrollIntoView({behavior:'smooth',block:'start'}); }
+function resetPicker(){ editingRecordId=null; editingLabId=null; eyebrow.textContent='New record'; document.querySelector('#record-form button[type=submit]').textContent='Save record'; card.hidden=true; picker.classList.remove('picker-collapsed'); currentType=''; document.querySelectorAll('.record-type-card').forEach(b=>{ b.classList.remove('selected'); b.setAttribute('aria-pressed','false'); }); picker.scrollIntoView({behavior:'smooth',block:'start'}); const first=document.querySelector('.record-type-card'); if(first)first.focus({preventScroll:true}); }
 document.getElementById('change-record-type').addEventListener('click',resetPicker); document.getElementById('cancel-record').addEventListener('click',resetPicker);
 document.getElementById('record-form').addEventListener('submit',async e=>{
  e.preventDefault(); if(!currentType)return;
